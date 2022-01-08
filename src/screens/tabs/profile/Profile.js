@@ -116,7 +116,9 @@ export default function Profile({ navigation }) {
                 skipBackup: true,
                 path: 'images',
             },
-            quality: 0.3
+            maxWidth: 400,
+            maxHeight: 400,
+            quality: 0.2
         };
         if (userInfo.displaypic) {
             options.customButtons = [

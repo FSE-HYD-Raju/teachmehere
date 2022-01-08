@@ -29,6 +29,8 @@ const Step4 = props => {
   const { postResponse, isPostQueryActive, hasErrors, loading } = useSelector(
     postSelector,
   );
+  const [disableSubmit, setDisableSubmit] = React.useState(false);
+
   return (
     <View>
       <Appbar.Header theme={DarkTheme} style={{ backgroundColor: 'white' }}>
@@ -47,6 +49,7 @@ const Step4 = props => {
           }}
           validationSchema={postStep4ValidationSchema}
           onSubmit={values => {
+            setDisableSubmit(true)
             saveState(values);
             props.next();
           }}>
@@ -166,7 +169,8 @@ const Step4 = props => {
                     mode="contained"
                     color={'black'}
                     labelStyle={styles.btnLabelStyle}
-                    onPress={formProps.handleSubmit}>
+                    onPress={formProps.handleSubmit}
+                    disabled={disableSubmit}>
                     <Text>{getState()._id ? "Update Skill" : "Post My Skill"}</Text>
                   </Button>
                 </TouchableOpacity>

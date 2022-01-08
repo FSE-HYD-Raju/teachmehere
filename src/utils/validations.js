@@ -25,7 +25,7 @@ const postStep2ValidationSchema = yup.object({
 const postStep4ValidationSchema = yup.object({
   // platform: yup.string().required(),
   //tags: yup.string().test(),
-  experience: yup.number().min(1),
+  experience: yup.number().min(0),
 });
 
 export {
