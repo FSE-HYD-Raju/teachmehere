@@ -9,6 +9,7 @@ import {
   Image,
   Platform,
   FlatList,
+  RefreshControl
 } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import SkillFlatList from '../../../components/common/SkillFlatList';
@@ -18,7 +19,7 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import IconMaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CategoryChipView from '../../../components/common/CategoryChipView';
-import { useSelector } from 'react-redux';
+import { useSelector , useDispatch} from 'react-redux';
 import { homeSelector } from '../../../redux/slices/homeSlice';
 import messaging from '@react-native-firebase/messaging';
 import { loginSelector } from '../../../redux/slices/loginSlice';
@@ -28,6 +29,8 @@ import { useRoute } from '@react-navigation/native';
 import { chatSelector } from '../../../redux/slices/chatSlice';
 import { Illustrations } from '../../../assets/illustrations';
 
+import { getRecentSearches } from '../../../redux/slices/searchSlice';
+import {   fetchInitialDataWhenAppLoading, fetchPostedSkills } from '../../../redux/slices/homeSlice';
 
 export default function Home(props) {
   const { homeData, loading, homeSkillsData } = useSelector(homeSelector);
@@ -39,6 +42,7 @@ export default function Home(props) {
   const [screenWidth, setScreenWidth] = useState(
     Dimensions.get('window').width,
   );
+  const dispatch = useDispatch();
   var notificunsubscribe = null;
   var focusNotiMsg = null;
   var lastMessageId = "";
@@ -348,9 +352,65 @@ export default function Home(props) {
     );
   };
 
+  const loadInitialData = () => {
+    getUserInfo();
+    searchInitialData();
+    checkPermission();
+  };
+
+  const searchInitialData = () => {
+    dispatch(getRecentSearches());
+    dispatch(fetchInitialDataWhenAppLoading());
+    dispatch(fetchPostedSkills());
+  };
+
+  const getUserInfo = async () => {
+    const userData = await getAsyncData('userInfo');
+    if (userData) {
+      dispatch(loadUserInfo(userData));
+    }
+  };
+
+  const checkPermission = async () => {
+    const enabled = await messaging().hasPermission();
+    if (enabled) {
+      getFcmToken();
+    } else {
+      requestPermission();
+    }
+  };
+
+  const getFcmToken = async () => {
+    var fcmToken = await messaging().getToken();
+    if (fcmToken) {
+      dispatch(setDeviceToken(fcmToken));
+      console.log(fcmToken);
+    } else {
+      console.log('Failed', 'No token received');
+    }
+  };
+
+  const requestPermission = async () => {
+    try {
+      await messaging().requestPermission();
+      getFcmToken();
+      // User has authorised
+    } catch (error) {
+      // User has rejected permissions
+    }
+  };
+
+  
   return (
     <View style={styles.container}>
       <ScrollView
+        refreshControl={
+              <RefreshControl
+                refreshing={false}
+                onRefresh={loadInitialData}
+                
+              />
+            }
         onLayout={() => setScreenWidth(Dimensions.get('window').width)}>
         {headerComponent()}
         {carouselComponent()}
