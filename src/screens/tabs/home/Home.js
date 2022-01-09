@@ -24,9 +24,16 @@ import messaging from '@react-native-firebase/messaging';
 import { loginSelector } from '../../../redux/slices/loginSlice';
 import PushNotification from 'react-native-push-notification';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import { useRoute } from '@react-navigation/native';
+import { chatSelector } from '../../../redux/slices/chatSlice';
+import { Illustrations } from '../../../assets/illustrations';
+
 
 export default function Home(props) {
   const { homeData, loading, homeSkillsData } = useSelector(homeSelector);
+  const { currentOpenedChat } = useSelector(chatSelector)
+  let currOpenedChat = currentOpenedChat
+  console.log(currentOpenedChat._id, 'dasfas')
   const { userInfo } = useSelector(loginSelector);
   const carouselRef = useRef(null);
   const [screenWidth, setScreenWidth] = useState(
@@ -35,6 +42,8 @@ export default function Home(props) {
   var notificunsubscribe = null;
   var focusNotiMsg = null;
   var lastMessageId = "";
+  const route = useRoute();
+  console.log(route.name);
 
   const showMore = group => {
     props.navigation.navigate('SkillListView', {
@@ -61,6 +70,15 @@ export default function Home(props) {
       }
     };
   }, [userInfo]);
+
+  // useEffect(() => {
+  //   currOpenedChat = currentOpenedChat
+  //   if (notificunsubscribe) {
+  //     alert('asdf')
+  //     notificunsubscribe();
+  //   }
+  //   appOpenedNotificationListener();
+  // }, [currentOpenedChat])
 
   const notificationListener = async () => {
     PushNotification.configure({
@@ -105,10 +123,23 @@ export default function Home(props) {
     });
   };
 
+  const getCur = () => {
+
+    return currentOpenedChat._id || null
+  }
+
   const appOpenedNotificationListener = () => {
     notificunsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('noti');
       console.log(remoteMessage);
+      console.log(getCur());
+      // alert('hrfj')
+      console.log(currOpenedChat._id);
+      console.log(JSON.parse(remoteMessage.data.data)._id);
+      console.log(remoteMessage.data.data);
+
+      let remoteData = JSON.parse(remoteMessage?.data?.data)?._id || ''
+      // alert(remoteData)
 
       focusNotiMsg = remoteMessage;
       if (remoteMessage.messageId !== lastMessageId) {
@@ -125,8 +156,11 @@ export default function Home(props) {
           vibration: 300,
           playSound: true,
           soundName: 'default',
+          id: JSON.stringify(id),
+          // userInfo: { id: '123' }
         });
       }
+      PushNotification.cancelLocalNotification({ id: id });
 
 
       // alert('A new FCM message arrived!' + JSON.stringify(remoteMessage));
@@ -172,7 +206,7 @@ export default function Home(props) {
           key={index}
         >
           <ParallaxImage
-            source={{ uri: item.illustration }}
+            source={Illustrations[item.illustration]}
             containerStyle={styles.imageContainer}
             style={{
               resizeMode: item.rezisemode ? item.rezisemode : 'contain',
