@@ -9,6 +9,7 @@ import {
   Image,
   Platform,
 } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
 import {
   styles,
   defaultAccentColor,
@@ -165,10 +166,11 @@ const AutoComplete = props => {
       />
 
       {showSuggestions && (
-        <View style={[styles.suggestionArea, sugestionsListPos.current]}>
+        <ScrollView
+          style={[styles.suggestionArea, sugestionsListPos.current]}
+          keyboardShouldPersistTaps="handled">
           <FlatList
             keyExtractor={(item, index) => index.toString()}
-            keyboardShouldPersistTaps="always"
             initialNumToRender={10}
             onEndReached={_handleLoadMore}
             onEndReachedThreshold={0.5}
@@ -183,7 +185,7 @@ const AutoComplete = props => {
               </TouchableOpacity>
             )}
           />
-        </View>
+        </ScrollView>
       )}
     </View>
   );

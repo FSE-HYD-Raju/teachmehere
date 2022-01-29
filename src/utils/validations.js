@@ -4,7 +4,7 @@ const postStep1ValidationSchema = yup.object({
   skillName: yup
     .string()
     .required()
-    .min(4),
+    .min(1),
   skillLevel: yup.string().required(),
   totalHours: yup
     .number()

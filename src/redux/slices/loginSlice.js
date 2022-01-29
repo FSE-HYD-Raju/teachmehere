@@ -7,7 +7,7 @@ import {
 } from '../../components/common/asyncStorage';
 
 export const initialState = {
-  loading: false,
+  profileLoading: false,
   userInfo: {},
   loginPassword: '',
   loginPasswordError: '',
@@ -29,13 +29,13 @@ const loginSlice = createSlice({
     setDeviceToken: (state, { payload }) => {
       state.devicetoken = payload;
     },
-    loginStarted: (state, { payload })  => {
-      state.loading = true;
-      state.loginEmail= payload;
+    loginStarted: (state, { payload }) => {
+      state.profileLoading = true;
+      state.loginEmail = payload;
     },
     loginSuccess: (state, { payload }) => {
       state.userInfo = payload;
-      state.loading = false;
+      state.profileLoading = false;
       state.loginEmailError = '';
       state.loginPasswordError = '';
     },
@@ -53,23 +53,29 @@ const loginSlice = createSlice({
       state.loginPassword = payload;
     },
     loginFailure: state => {
-      state.loading = false;
+      state.profileLoading = false;
       state.loginError = 'Something went wrong, please try again later!';
     },
     passwordIncorrect: (state, { payload }) => {
       state.loginPasswordError = payload;
-      state.loading = false;
+      state.profileLoading = false;
     },
     EmailIncorrect: (state, { payload }) => {
       state.loginEmailError = payload;
-      state.loading = false;
+      state.profileLoading = false;
     },
     logoutSuccess: state => {
       state.userInfo = '';
       state.loginEmailError = '';
       state.loginPasswordError = '';
       state.loginError = '';
-      state.loading = false;
+      state.profileLoading = false;
+    },
+    logoutStarted: state => {
+      state.profileLoading = true;
+    },
+    logoutDone: state => {
+      state.profileLoading = false;
     },
     setReqFavPostedCount: (state, { payload }) => {
       state.reqFavPostedCount = payload;
@@ -89,6 +95,8 @@ export const {
   loadUserInfo,
   logoutSuccess,
   setReqFavPostedCount,
+  logoutStarted,
+  logoutDone,
 } = loginSlice.actions;
 
 export const loginSelector = state => state.login;
@@ -133,17 +141,19 @@ export function onLoginPressed(param) {
 }
 
 export function logOutUser(param) {
-  param.onSuccess();
-
   return async (dispatch, getState) => {
-    dispatch(
-      setReqFavPostedCount({
-        coursedetailscount: 0,
-        requestedcoursescount: 0,
-        myfavoritescount: 0,
-      }),
-    );
-    clearAsyncData();
-    dispatch(logoutSuccess());
+    param.onSuccess();
+    setTimeout(() => {
+      dispatch(logoutStarted());
+      dispatch(
+        setReqFavPostedCount({
+          coursedetailscount: 0,
+          requestedcoursescount: 0,
+          myfavoritescount: 0,
+        }),
+      );
+      clearAsyncData();
+      dispatch(logoutSuccess());
+    }, 50);
   };
 }

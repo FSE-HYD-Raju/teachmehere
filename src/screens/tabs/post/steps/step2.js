@@ -35,14 +35,12 @@ const Step2 = props => {
   const [countries, setCountries] = useState(
     require('../../../../assets/countries.json') || [],
   );
-  const defaultCountry = countries.filter(coun => coun.name == 'India') || []
+  const defaultCountry = countries.filter(coun => coun.name == 'India') || [];
 
   useEffect(() => {
-    if (!getState().country)
-      selectLanguage(defaultCountry[0]?.language?.name)
+    if (!getState().country) selectLanguage(defaultCountry[0]?.language?.name);
     // saveState({ country: defaultCountry[0] });
-
-  }, [countries])
+  }, [countries]);
   const [allLaunguages] = useState(
     require('../../../../assets/languages.json') || [],
   );
@@ -69,7 +67,7 @@ const Step2 = props => {
       languagesToUpdate.splice(index, 1);
     } else {
       setLangError(true);
-      setTimeout(function () {
+      setTimeout(function() {
         setLangError(false);
       }, 3000);
     }
@@ -78,7 +76,7 @@ const Step2 = props => {
 
   return (
     <View>
-      <Appbar.Header theme={DarkTheme} style={{ backgroundColor: "white" }}>
+      <Appbar.Header theme={DarkTheme} style={{ backgroundColor: 'white' }}>
         <Appbar.BackAction onPress={props.back} />
         <Appbar.Content title="Pricing" />
       </Appbar.Header>

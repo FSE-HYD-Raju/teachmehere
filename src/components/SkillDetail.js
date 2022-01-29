@@ -22,6 +22,7 @@ import { setLocale } from 'yup';
 import { homeSelector } from '../redux/slices/homeSlice';
 import { loginSelector } from '../redux/slices/loginSlice';
 import IconMaterialIcons from 'react-native-vector-icons/FontAwesome';
+import { Illustrations } from '../assets/illustrations';
 
 import {
   profileSelector,
@@ -43,22 +44,24 @@ export default function SkillDetail({ route, navigation }) {
   const [visibleSnackbar, setVisibleSnackbar] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [requestedObj, setRequestedObj] = React.useState(null);
-  const [userRating, setCurrentRating] = useState(0)
-  const [ratingLoading, setRatingLoading] = useState(true)
-  const [deleteLoading, setDeleteLoading] = useState(false)
-
+  const [userRating, setCurrentRating] = useState(0);
+  const [ratingLoading, setRatingLoading] = useState(true);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const currentSkillRating = userRatings.filter(ele => ele.courseid == skill._id)
-    const rating = currentSkillRating[0]?.rating
+    const currentSkillRating = userRatings.filter(
+      ele => ele.courseid == skill._id,
+    );
+    const rating = currentSkillRating[0]?.rating;
 
-    setCurrentRating(rating || 0)
-  }, [userRatings])
+    setCurrentRating(rating || 0);
+  }, [userRatings]);
 
   useEffect(() => {
-    if (userInfo._id
+    if (
+      userInfo._id
       // && (!requestedSkills || !requestedSkills.length)
     ) {
       getRequetedCourses(userInfo._id);
@@ -92,9 +95,7 @@ export default function SkillDetail({ route, navigation }) {
         if (responseJson && responseJson.length) {
           dispatch(setRequestedSkills(responseJson));
         }
-        let reqObj = responseJson.filter(
-          obj => obj.courseuid == skill.uid,
-        );
+        let reqObj = responseJson.filter(obj => obj.courseuid == skill.uid);
         if (reqObj.length) {
           setRequestedObj(reqObj[0]);
         }
@@ -107,7 +108,7 @@ export default function SkillDetail({ route, navigation }) {
   };
 
   const getUserRating = uid => {
-    setRatingLoading(true)
+    setRatingLoading(true);
     fetch('https://teachmeproject.herokuapp.com/getUserRatingById', {
       method: 'POST',
       headers: {
@@ -123,16 +124,15 @@ export default function SkillDetail({ route, navigation }) {
         console.log('ratings', JSON.stringify(responseJson));
         if (responseJson && responseJson.length) {
           dispatch(setUserRating(responseJson));
-        }
-        else {
+        } else {
           dispatch(setUserRating([]));
         }
 
-        setRatingLoading(false)
+        setRatingLoading(false);
       })
       .catch(error => {
         console.log(error);
-        setRatingLoading(false)
+        setRatingLoading(false);
       });
   };
 
@@ -166,6 +166,7 @@ export default function SkillDetail({ route, navigation }) {
     var categoryImage = homeData.categories.filter(
       cat => cat.category == skill.category,
     );
+    console.log('heloooooooooooo', categoryImage);
 
     const onShare = async () => {
       try {
@@ -199,7 +200,7 @@ export default function SkillDetail({ route, navigation }) {
         <Image
           source={
             categoryImage && categoryImage.length
-              ? { uri: categoryImage[0].illustration }
+              ? Illustrations[categoryImage[0].illustration]
               : require('../assets/img/skill.jpeg')
           }
           style={styles.imgStyle}
@@ -223,10 +224,10 @@ export default function SkillDetail({ route, navigation }) {
     );
   };
 
-  const setRating = (rating) => {
-    let url = 'https://teachmeproject.herokuapp.com/addUserRating'
+  const setRating = rating => {
+    let url = 'https://teachmeproject.herokuapp.com/addUserRating';
     if (userRating) {
-      url = 'https://teachmeproject.herokuapp.com/updateUserRating'
+      url = 'https://teachmeproject.herokuapp.com/updateUserRating';
     }
     fetch(url, {
       method: 'POST',
@@ -237,7 +238,7 @@ export default function SkillDetail({ route, navigation }) {
       body: JSON.stringify({
         uid: userInfo._id,
         courseid: skill._id,
-        rating: rating
+        rating: rating,
       }),
     })
       .then(response => response.json())
@@ -247,10 +248,10 @@ export default function SkillDetail({ route, navigation }) {
       .catch(error => {
         console.log(error);
       });
-  }
+  };
 
   const deleteSkill = () => {
-    setDeleteLoading(true)
+    setDeleteLoading(true);
     fetch('https://teachmeproject.herokuapp.com/updateCourseDetails', {
       method: 'POST',
       headers: {
@@ -259,23 +260,27 @@ export default function SkillDetail({ route, navigation }) {
       },
       body: JSON.stringify({
         _id: skill._id,
-        status: 'DELETE'
+        status: 'DELETE',
       }),
     })
       .then(response => response.json())
       .then(responseJson => {
         console.log(JSON.stringify(responseJson));
-        setDeleteLoading(false)
-        navigation.navigate('Profile')
+        setDeleteLoading(false);
+        navigation.navigate('Profile', { fromDelete: true });
       })
       .catch(error => {
-        setDeleteLoading(false)
+        setDeleteLoading(false);
         console.log(error);
       });
-  }
+  };
 
   const imageComponent = () => {
-    const showRating = userInfo._id && userInfo._id !== skill.uid && !!requestedObj && requestedObj.request_status == 'ACCEPTED'
+    const showRating =
+      userInfo._id &&
+      userInfo._id !== skill.uid &&
+      !!requestedObj &&
+      requestedObj.request_status == 'ACCEPTED';
     return (
       <View>
         <View style={{ alignItems: 'center' }}>
@@ -287,7 +292,7 @@ export default function SkillDetail({ route, navigation }) {
                 ? { uri: skill.displaypic }
                 : require('../assets/img/default-mask-avatar.png')
             }
-          // source={require('../assets/img/defaultAvatar.png')}
+            // source={require('../assets/img/defaultAvatar.png')}
           />
           <Text
             style={{
@@ -317,23 +322,35 @@ export default function SkillDetail({ route, navigation }) {
             />
             <Text style={styles.usersRated}>({skill.usersrated})</Text>
           </View>
-          {userInfo._id != skill.uid && <Button
-            mode="text"
-            color={'#0052cc'}
-            labelStyle={{ fontSize: 14, textTransform: 'capitalize' }}
-            onPress={() =>
-              navigation.navigate('UserDetailsPage', { userinfo: skill })
-            }>
-            View profile
-          </Button>
-          }
+          {userInfo._id != skill.uid && (
+            <Button
+              mode="text"
+              color={'#0052cc'}
+              labelStyle={{ fontSize: 14, textTransform: 'capitalize' }}
+              onPress={() =>
+                navigation.navigate('UserDetailsPage', { userinfo: skill })
+              }>
+              View profile
+            </Button>
+          )}
 
-          {showRating && <View style={{ flexDirection: 'row' }}>
-            <Text>Rate this skill - </Text>
-            {!ratingLoading && <Rating type='star' showRating={false} ratingTextColor="black" imageSize={20} startingValue={userRating} style={{ height: 30 }} onFinishRating={(rating) => setRating(rating)} />}
-            {!!ratingLoading && <Text>Please wait</Text>}
-          </View>
-          }
+          {showRating && (
+            <View style={{ flexDirection: 'row' }}>
+              <Text>Rate this skill - </Text>
+              {!ratingLoading && (
+                <Rating
+                  type="star"
+                  showRating={false}
+                  ratingTextColor="black"
+                  imageSize={20}
+                  startingValue={userRating}
+                  style={{ height: 30 }}
+                  onFinishRating={rating => setRating(rating)}
+                />
+              )}
+              {!!ratingLoading && <Text>Please wait</Text>}
+            </View>
+          )}
         </View>
         {/* <MaterialCommunityIcons
           style={{ marginLeft: '88%', position: 'absolute', padding: 10 }}
@@ -356,31 +373,49 @@ export default function SkillDetail({ route, navigation }) {
         </DataTable.Header>
         <DataTable.Row>
           <DataTable.Cell style={{ fontSize: 90 }}>Skill Level</DataTable.Cell>
-          <DataTable.Cell>- <Text style={styles.tableValues}>{skill.courselevel}</Text></DataTable.Cell>
+          <DataTable.Cell>
+            - <Text style={styles.tableValues}>{skill.courselevel}</Text>
+          </DataTable.Cell>
         </DataTable.Row>
         <DataTable.Row>
           <DataTable.Cell>Speaking Languages</DataTable.Cell>
           <DataTable.Cell>
-            - <Text style={styles.tableValues}>{skill.speakinglanguages.length > 0
-              ? getSpeakingLanguages(skill.speakinglanguages)
-              : ''}</Text>
+            -{' '}
+            <Text style={styles.tableValues}>
+              {skill.speakinglanguages.length > 0
+                ? getSpeakingLanguages(skill.speakinglanguages)
+                : ''}
+            </Text>
           </DataTable.Cell>
         </DataTable.Row>
         <DataTable.Row>
           <DataTable.Cell>Platform</DataTable.Cell>
-          <DataTable.Cell>- <Text style={styles.tableValues}> {skill.platform} </Text></DataTable.Cell>
+          <DataTable.Cell>
+            - <Text style={styles.tableValues}> {skill.platform} </Text>
+          </DataTable.Cell>
         </DataTable.Row>
         <DataTable.Row>
           <DataTable.Cell>Country</DataTable.Cell>
-          <DataTable.Cell>- <Text style={styles.tableValues}> {skill.country}</Text></DataTable.Cell>
+          <DataTable.Cell>
+            - <Text style={styles.tableValues}> {skill.country}</Text>
+          </DataTable.Cell>
         </DataTable.Row>
         <DataTable.Row>
           <DataTable.Cell>Demo available ?</DataTable.Cell>
-          <DataTable.Cell>- <Text style={styles.tableValues}> {skill.demo ? 'Yes' : 'No'}</Text></DataTable.Cell>
+          <DataTable.Cell>
+            -{' '}
+            <Text style={styles.tableValues}> {skill.demo ? 'Yes' : 'No'}</Text>
+          </DataTable.Cell>
         </DataTable.Row>
         <DataTable.Row>
           <DataTable.Cell>Posted</DataTable.Cell>
-          <DataTable.Cell>- <Text style={styles.tableValues}> {moment(skill.createddate).fromNow()} </Text></DataTable.Cell>
+          <DataTable.Cell>
+            -{' '}
+            <Text style={styles.tableValues}>
+              {' '}
+              {moment(skill.createddate).fromNow()}{' '}
+            </Text>
+          </DataTable.Cell>
         </DataTable.Row>
         <DataTable.Row />
       </DataTable>
@@ -388,32 +423,50 @@ export default function SkillDetail({ route, navigation }) {
   };
 
   const bodyComponent = () => {
-    const showEdit = userInfo._id && userInfo._id == skill.uid && origin == 'posted'
-    const showDelete = userInfo._id && userInfo._id === skill.uid && origin == 'posted'
+    const showEdit =
+      userInfo._id && userInfo._id == skill.uid && origin == 'posted';
+    const showDelete =
+      userInfo._id && userInfo._id === skill.uid && origin == 'posted';
 
     return (
       <View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginRight: showEdit ? 20 : 0 }}>
-          <Text style={[styles.skillName, showEdit && { width: '80%' }]}>{skill.coursename}</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginRight: showEdit ? 20 : 0,
+          }}>
+          <Text style={[styles.skillName, showEdit && { width: '80%' }]}>
+            {skill.coursename}
+          </Text>
 
-          {showEdit && <TouchableOpacity onPress={() => { navigation.navigate('PostPage', { editingSkill: skill }) }} style={{ alignItems: 'flex-end', padding: 15, paddingRight: 10 }}>
-            <IconMaterialIcons
-              name={'edit'}
-              color="black"
-              size={20}
-              style={{ height: 20 }}
-            />
-          </TouchableOpacity>
-          }
-          {showDelete && <TouchableOpacity onPress={deleteSkill} style={{ alignItems: 'flex-end', padding: 15, paddingRight: 10 }}>
-            <IconMaterialIcons
-              name={'trash-o'}
-              color="black"
-              size={20}
-              style={{ height: 20 }}
-            />
-          </TouchableOpacity>
-          }
+          {showEdit && (
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('PostPage', { editingSkill: skill });
+              }}
+              style={{ alignItems: 'flex-end', padding: 15, paddingRight: 10 }}>
+              <IconMaterialIcons
+                name={'edit'}
+                color="black"
+                size={20}
+                style={{ height: 20 }}
+              />
+            </TouchableOpacity>
+          )}
+          {showDelete && (
+            <TouchableOpacity
+              onPress={deleteSkill}
+              style={{ alignItems: 'flex-end', padding: 15, paddingRight: 10 }}>
+              <IconMaterialIcons
+                name={'trash-o'}
+                color="black"
+                size={20}
+                style={{ height: 20 }}
+              />
+            </TouchableOpacity>
+          )}
         </View>
         <View style={{ width: '40%', padding: 20, paddingTop: 0 }}>
           <Price price={skill.price} currency={skill.currency} />
@@ -627,7 +680,10 @@ export default function SkillDetail({ route, navigation }) {
             console.log(itemObj);
             setLoading(false);
             // navigation.navigate('ChatRoom', { thread: itemObj });
-            navigation.navigate('Chat', { screen: 'ChatRoom', params: { thread: itemObj } })
+            navigation.navigate('Chat', {
+              screen: 'ChatRoom',
+              params: { thread: itemObj },
+            });
           }
         });
     };
@@ -670,7 +726,7 @@ export default function SkillDetail({ route, navigation }) {
             createdAt: Date.now(),
             system: true,
           })
-          .then(() => { });
+          .then(() => {});
       });
 
       var itemObj = {
@@ -684,8 +740,10 @@ export default function SkillDetail({ route, navigation }) {
       // navigation.popToTop();
       setLoading(false);
       // navigation.navigate('ChatRoom', { thread: itemObj });
-      navigation.navigate('Chat', { screen: 'ChatRoom', params: { thread: itemObj } })
-
+      navigation.navigate('Chat', {
+        screen: 'ChatRoom',
+        params: { thread: itemObj },
+      });
     }
 
     // alert(JSON.stringify(requestedObj))
@@ -721,14 +779,14 @@ export default function SkillDetail({ route, navigation }) {
         {/* <Text>{JSON.stringify(requestedObj)}</Text> */}
         {(requestedObj.request_status == 'REJECTED' ||
           requestedObj.request_status == 'PENDING') && (
-            <Button
-              disabled={true}
-              mode="contained"
-              color={'black'}
-              labelStyle={globalStyles.btnLabelStyle}>
-              {requestedObj.request_status}
-            </Button>
-          )}
+          <Button
+            disabled={true}
+            mode="contained"
+            color={'black'}
+            labelStyle={globalStyles.btnLabelStyle}>
+            {requestedObj.request_status}
+          </Button>
+        )}
         {requestedObj.request_status == 'ACCEPTED' && (
           <Button
             mode="contained"

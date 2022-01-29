@@ -24,7 +24,9 @@ export default function Post({ route, navigation }) {
   const { homeData } = useSelector(homeSelector);
   const categories = homeData['categories'];
   const { userInfo } = useSelector(loginSelector);
-  const [editingSkill, setEditingSkill] = useState(route.params?.editingSkill || null)
+  const [editingSkill, setEditingSkill] = useState(
+    route.params?.editingSkill || null,
+  );
   const [state, setState] = useState({
     showMainCategories: editingSkill ? false : true,
     showSubCategories: false,
@@ -72,10 +74,10 @@ export default function Post({ route, navigation }) {
 
   const showStepsFun = (subCategory, isOthers) => {
     const others = {
-      "id": "others",
-      "name": "Other",
-      "hidden": false
-    }
+      id: 'others',
+      name: 'Other',
+      hidden: false,
+    };
     setState({
       ...state,
       showMainCategories: false,
@@ -107,10 +109,10 @@ export default function Post({ route, navigation }) {
 
   const backFromSteps = () => {
     if (editingSkill && editingSkill._id) {
-      navigation.goBack()
+      navigation.goBack();
       return;
     }
-    const isOthers = state.activeCategory.category == 'Others'
+    const isOthers = state.activeCategory.category == 'Others';
     setState({
       ...state,
       showSteps: false,
@@ -143,7 +145,9 @@ export default function Post({ route, navigation }) {
         </View>
       )}
 
-      <ScrollView contentContainerStyle={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled">
         {showMainCategories &&
           categories &&
           categories.map(category => (
@@ -152,12 +156,11 @@ export default function Post({ route, navigation }) {
               style={styles.category}
               onPress={() => {
                 if (category.category == 'Others') {
-                  showStepsFun(category, true)
+                  showStepsFun(category, true);
                   return;
                 }
-                showSubCategoriesFun(category)
-              }
-              } >
+                showSubCategoriesFun(category);
+              }}>
               <View key={category.id} style={styles.IconAndName}>
                 <IconMaterialIcons
                   name={category.icon}
