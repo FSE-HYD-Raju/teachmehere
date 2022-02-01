@@ -39,7 +39,7 @@ const Step1 = props => {
   const addContent = () => {
     if (content) {
       saveState({ contents: [...contents, content] });
-      setContent({});
+      setContent('');
     }
   };
 
@@ -50,7 +50,7 @@ const Step1 = props => {
 
   return (
     <View>
-      <Appbar.Header theme={DarkTheme} style={{ backgroundColor: "white" }}>
+      <Appbar.Header theme={DarkTheme} style={{ backgroundColor: 'white' }}>
         <Appbar.BackAction onPress={props.backFromSteps} />
         <Appbar.Content title="Skill Details" />
       </Appbar.Header>

@@ -219,7 +219,7 @@ export default function signupFormPage({ navigation }) {
     Phonenumber: yup.number().required(),
     Username: yup
       .string()
-      .min(5)
+      .min(3)
       .required(),
     Password: yup
       .string()

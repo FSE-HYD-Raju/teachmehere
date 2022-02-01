@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import { Card, Avatar, Badge, Icon, Rating } from 'react-native-elements';
 import Price from '../common/Price';
-import moment from 'moment'
+import moment from 'moment';
 
 export default function CourseListCard({
   course,
@@ -20,16 +20,18 @@ export default function CourseListCard({
   const userProfilePic =
     course && course.displaypic
       ? {
-        uri: course.displaypic,
-      }
+          uri: course.displaypic,
+        }
       : // { uri: "https://bootdey.com/img/Content/avatar/avatar7.png" }
-      require('../../assets/img/default-mask-avatar.png');
+        require('../../assets/img/default-mask-avatar.png');
   return (
     <TouchableOpacity onPress={courseClicked}>
       <View style={styles.card}>
         <View style={styles.userDetails}>
           <Image style={styles.userImage} source={userProfilePic} />
-          <Text style={{ ...styles.textStyle, alignSelf: 'center' }}>{course.username}</Text>
+          <Text style={{ ...styles.textStyle, alignSelf: 'center' }}>
+            {course.username}
+          </Text>
           <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
             <Rating
               type="star"
@@ -39,10 +41,14 @@ export default function CourseListCard({
               style={{ marginTop: 5, marginBottom: 5 }}
             />
             <Text style={styles.usersRated}>({course.usersrated})</Text>
-
           </View>
           <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 10, }}>{moment(course.updateddate).fromNow()}</Text>
+            <Text style={{ fontSize: 10 }}>
+              {moment
+                .utc(course.updateddate)
+                .local()
+                .fromNow()}
+            </Text>
           </View>
         </View>
         <View style={styles.courseDetails}>
@@ -59,9 +65,10 @@ export default function CourseListCard({
               <Price price={course.price} currency={course.currency} />
             </View>
             <View style={styles.platform}>
-              <Text style={styles.platformText}>{course.totalhours} Hours Skill</Text>
+              <Text style={styles.platformText}>
+                {course.totalhours} Hours Skill
+              </Text>
             </View>
-
           </View>
         </View>
       </View>
@@ -86,7 +93,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginBottom: 10,
     borderWidth: 0.5,
-    borderColor: "lightgrey",
+    borderColor: 'lightgrey',
     // borderRadius: 5,
   },
   userDetails: {
@@ -96,7 +103,7 @@ const styles = StyleSheet.create({
   courseDetails: {
     marginVertical: 8,
     // width: '60%',
-    flex: 0.95
+    flex: 0.95,
     // paddingHorizontal: 16,
     // borderTopLeftRadius: 1,
     // borderTopRightRadius: 1,

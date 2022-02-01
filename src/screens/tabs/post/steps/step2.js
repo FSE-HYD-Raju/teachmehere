@@ -101,10 +101,10 @@ const Step2 = props => {
           onSubmit={values => {
             props.next();
             props.saveState(values);
-            if (!getState().daysOfTheWeek) {
+            if (!getState().daysofweek?.length) {
               props.saveState({
                 onDays: 'Daily',
-                daysOfTheWeek: [
+                daysofweek: [
                   { name: 'Sun', checked: false },
                   { name: 'Mon', checked: false },
                   { name: 'Tue', checked: false },

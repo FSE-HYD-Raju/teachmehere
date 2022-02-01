@@ -176,7 +176,11 @@ const AutoComplete = props => {
             onEndReachedThreshold={0.5}
             data={mData}
             renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleSelection(item)}>
+              <TouchableOpacity
+                onPress={() => {
+                  // selectedItem[displayKey] = '';
+                  handleSelection(item);
+                }}>
                 <View style={[styles.suggestionElementView]}>
                   <Text caps style={[styles.suggestionItem]} numberOfLines={1}>
                     {item[displayKey]}

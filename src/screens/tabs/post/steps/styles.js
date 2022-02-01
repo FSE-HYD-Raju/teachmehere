@@ -114,7 +114,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     padding: 10,
     paddingLeft: 10,
-    borderRadius: 10
+    borderRadius: 10,
   },
   row: {
     // flexDirection: 'row',
@@ -126,7 +126,6 @@ export default StyleSheet.create({
     // marginLeft: 5,
     flexDirection: 'row',
     alignItems: 'center',
-
   },
   content: {
     // width: 280,

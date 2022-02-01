@@ -59,7 +59,7 @@ const Steps = props => {
       startTime,
       endTime,
       onDays,
-      daysOfTheWeek,
+      daysofweek,
       isTentativeSchedule,
       platform,
       tags,
@@ -94,7 +94,7 @@ const Steps = props => {
           courseenddate: endDate || '',
           ondays: {
             availableon: onDays || '',
-            daysofweek: daysOfTheWeek || [],
+            daysofweek: daysofweek || [],
           },
           coursestarttime: startTime || '',
           coursesendtime: endTime || '',
@@ -110,7 +110,7 @@ const Steps = props => {
       console.log(postData, 'postData');
 
       if (state._id) {
-        postData._id = state._id
+        postData._id = state._id;
         dispatch(
           updateSkill({
             postData,
@@ -120,8 +120,7 @@ const Steps = props => {
               // props.navigation.goBack()
               // props.navigation.navigate('Home')
 
-              props.navigation.navigate('Profile', { screen: 'PostedCourses' })
-
+              props.navigation.navigate('Profile', { screen: 'PostedCourses' });
             },
           }),
         );
@@ -143,8 +142,7 @@ const Steps = props => {
             // });
             props.goToMainCategories();
 
-            props.navigation.navigate('Profile', { screen: 'PostedCourses' })
-
+            props.navigation.navigate('Profile', { screen: 'PostedCourses' });
 
             // setTimeout(function () {
             //   props.goToMainCategories();

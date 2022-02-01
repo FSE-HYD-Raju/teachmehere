@@ -12,12 +12,12 @@ import { Button } from 'react-native-elements';
 import IconMaterialIcons from 'react-native-vector-icons/Feather';
 
 export default function GuestPage({ navigation }) {
-
   const settingsIconContainer = () => {
     return (
-      <View style={styles.settingsIconContainer}>
+      <View style={{ alignItems: 'flex-end', width: '100%' }}>
         <TouchableOpacity
-          onPress={() => navigation.navigate('ProfileSettings')}>
+          onPress={() => navigation.navigate('ProfileSettings')}
+          style={styles.settingsIconContainer}>
           <IconMaterialIcons
             name={'settings'}
             color="rgb(102, 94, 94)"
@@ -30,16 +30,15 @@ export default function GuestPage({ navigation }) {
 
   const imageContainer = () => {
     return (
-      <View
-        style={styles.centerAligned}>
+      <View style={styles.centerAligned}>
         <Image
-          resizeMode={"stretch"}
+          resizeMode={'stretch'}
           style={styles.backgroundImage}
           source={require('../../../assets/img/guest.png')}
         />
       </View>
-    )
-  }
+    );
+  };
 
   const textContainer = () => {
     return (
@@ -105,7 +104,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: 35,
     marginRight: 30,
-    elevation: 10
+    elevation: 10,
   },
   text: {
     color: 'gray',
@@ -136,7 +135,7 @@ const styles = StyleSheet.create({
   },
   centerAligned: {
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   container: {
     flex: 1,

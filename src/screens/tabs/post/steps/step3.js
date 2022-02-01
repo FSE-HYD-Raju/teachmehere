@@ -86,15 +86,16 @@ const Step3 = props => {
 
   const updateState = day => {
     const { saveState, getState } = props;
-    const { daysOfTheWeek } = getState();
-    const i = daysOfTheWeek.findIndex(weekDay => weekDay.name === day.name);
-    daysOfTheWeek[i].checked = true;
-    saveState({ daysOfTheWeek: daysOfTheWeek });
+    const { daysofweek } = getState();
+    const i = daysofweek.findIndex(weekDay => weekDay.name === day.name);
+    let days = JSON.parse(JSON.stringify(daysofweek));
+    days[i].checked = true;
+    saveState({ daysofweek: days });
   };
 
   return (
     <View>
-      <Appbar.Header theme={DarkTheme} style={{ backgroundColor: "white" }}>
+      <Appbar.Header theme={DarkTheme} style={{ backgroundColor: 'white' }}>
         <Appbar.BackAction onPress={props.back} />
         <Appbar.Content title="Plan Your Time" />
         <Text style={styles.skipButton} onPress={props.next}>
@@ -232,12 +233,13 @@ const Step3 = props => {
               </RadioButton.Group>
               {getState().onDays === 'specificDays' && (
                 <View style={{ marginLeft: 40, height: 150, flexWrap: 'wrap' }}>
-                  {getState().daysOfTheWeek &&
-                    getState().daysOfTheWeek.map(day => {
+                  {getState().daysofweek &&
+                    getState().daysofweek.map((day, index) => {
                       return (
                         <TouchableOpacity
                           style={{ flexDirection: 'row' }}
-                          onPress={() => updateState(day)}>
+                          onPress={() => updateState(day)}
+                          key={index}>
                           <Checkbox
                             checkedIcon="dot-circle-o"
                             uncheckedIcon="circle-o"

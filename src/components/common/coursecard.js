@@ -20,10 +20,10 @@ export default function CourseCard({
   const userProfilePic =
     course && course.displaypic
       ? {
-        uri: course.displaypic,
-      }
+          uri: course.displaypic,
+        }
       : // { uri: "https://bootdey.com/img/Content/avatar/avatar7.png" }
-      require('../../assets/img/default-mask-avatar.png');
+        require('../../assets/img/default-mask-avatar.png');
   return (
     <View style={[styles.card, { width: cardWidth }]}>
       {/* <View style={styles.cardHeader}>
@@ -79,7 +79,9 @@ export default function CourseCard({
             <Price price={course.price} currency={course.currency} />
           </View>
           <View style={styles.platform}>
-            <Text style={styles.platformText}>{course.totalhours} Hours Skill</Text>
+            <Text style={styles.platformText}>
+              {course.totalhours} Hours Skill
+            </Text>
           </View>
         </View>
       </View>
@@ -101,7 +103,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     flexBasis: '46%',
     marginHorizontal: 5,
-    minHeight: 270,
+    minHeight: 240,
     borderWidth: 0.7,
     borderColor: 'lightgrey',
     borderRadius: 10,

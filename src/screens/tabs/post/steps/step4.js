@@ -49,7 +49,7 @@ const Step4 = props => {
           }}
           validationSchema={postStep4ValidationSchema}
           onSubmit={values => {
-            setDisableSubmit(true)
+            setDisableSubmit(true);
             saveState(values);
             props.next();
           }}>
@@ -171,7 +171,9 @@ const Step4 = props => {
                     labelStyle={styles.btnLabelStyle}
                     onPress={formProps.handleSubmit}
                     disabled={disableSubmit}>
-                    <Text>{getState()._id ? "Update Skill" : "Post My Skill"}</Text>
+                    <Text>
+                      {getState()._id ? 'Update Skill' : 'Post My Skill'}
+                    </Text>
                   </Button>
                 </TouchableOpacity>
               </View>

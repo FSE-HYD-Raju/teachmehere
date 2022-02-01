@@ -220,7 +220,7 @@ export default function Profile({ route, navigation }) {
   const userDescContainer = () => {
     return (
       <View style={styles.userDescContainer}>
-        <Text numberOfLines={4} style={styles.userDesc}>
+        <Text style={styles.userDesc}>
           {userInfo.description
             ? userInfo.description
             : 'Your description will be shown here! You can add your description from change profile page!'}
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 213, 87, 0.63)',
     // height: 75,
     width: 280,
-    textAlign: 'center',
+    // textAlign: 'center',
     paddingVertical: 15,
     paddingHorizontal: 30,
     letterSpacing: 1,

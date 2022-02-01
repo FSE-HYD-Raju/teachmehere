@@ -23,19 +23,16 @@ export class index extends Component {
   componentWillMount() {
     const { comeInOnNext = defaultInOnNext } = this.props;
     this.setState({ action: comeInOnNext });
-    this.updateEditedValues()
+    this.updateEditedValues();
   }
 
   componentDidMount() {
     const { steps = 0 } = this.props;
     this.setState({ totalSteps: steps.length - 1 });
-    this.backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        this.back();
-        return true;
-      },
-    );
+    this.backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+      this.back();
+      return true;
+    });
   }
 
   componentWillUnmount() {
@@ -44,7 +41,27 @@ export class index extends Component {
 
   updateEditedValues = () => {
     if (!this.props.editingSkill) return;
-    const { coursename, courselevel, content, category, subCategory, totalhours, country, currency, price, speakinglanguages, availability, platform, tags, experience, profilesummary, linkedinprofile, demo, _id } = this.props.editingSkill || {}
+    const {
+      coursename,
+      courselevel,
+      content,
+      category,
+      subCategory,
+      totalhours,
+      country,
+      currency,
+      price,
+      speakinglanguages,
+      availability,
+      platform,
+      tags,
+      experience,
+      profilesummary,
+      linkedinprofile,
+      demo,
+      _id,
+    } = this.props.editingSkill || {};
+    console.log('this.props.editingSkill', this.props.editingSkill);
     const enteredValues = {
       skillName: coursename,
       skillLevel: courselevel,
@@ -53,11 +70,11 @@ export class index extends Component {
       subcategory: subCategory,
       totalHours: totalhours.toString(),
       country: { name: country, currency: { symbol: currency } },
-      individualPrice: (price.oneonone).toString(),
-      noOfPeople: price.group.members ? (price.group.members).toString() : null,
-      groupPrice: price.group.price ? (price.group.price).toString() : null,
+      individualPrice: price.oneonone.toString(),
+      noOfPeople: price.group.members ? price.group.members.toString() : null,
+      groupPrice: price.group.price ? price.group.price.toString() : null,
       isGroupSelected: price.group.price ? true : false,
-      languages: speakinglanguages,
+      languages: [...speakinglanguages],
       startDate: availability.coursestartdate,
       endDate: availability.courseenddate,
       onDays: availability.ondays.availableon,
@@ -72,12 +89,12 @@ export class index extends Component {
       linkedInProfile: linkedinprofile,
       availableForDemo: demo,
       _id,
-    }
+    };
 
-    console.log(enteredValues)
+    console.log(enteredValues);
 
-    this.setState({ userState: enteredValues })
-  }
+    this.setState({ userState: { ...enteredValues } });
+  };
 
   next = () => {
     const { currentStep, totalSteps } = this.state;
@@ -115,7 +132,7 @@ export class index extends Component {
         }, duration);
       }
     } else {
-      this.props.backFromSteps()
+      this.props.backFromSteps();
     }
   };
 

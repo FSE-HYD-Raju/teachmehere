@@ -413,7 +413,10 @@ export default function SkillDetail({ route, navigation }) {
             -{' '}
             <Text style={styles.tableValues}>
               {' '}
-              {moment(skill.createddate).fromNow()}{' '}
+              {moment
+                .utc(skill.createddate)
+                .local()
+                .fromNow()}{' '}
             </Text>
           </DataTable.Cell>
         </DataTable.Row>
@@ -519,10 +522,10 @@ export default function SkillDetail({ route, navigation }) {
         <Text style={{ padding: 10, fontSize: 20, fontWeight: 'bold' }}>
           Description
         </Text>
-        {!!skill.description && (
-          <Text style={{ padding: 10 }}>{skill.description}</Text>
+        {!!skill.profilesummary && (
+          <Text style={{ padding: 10 }}>{skill.profilesummary}</Text>
         )}
-        {!skill.description && (
+        {!skill.profilesummary && (
           <Text style={{ padding: 20, fontSize: 15 }}>
             Description not mentioned
           </Text>
