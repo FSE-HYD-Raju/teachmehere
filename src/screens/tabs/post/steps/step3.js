@@ -89,7 +89,7 @@ const Step3 = props => {
     const { daysofweek } = getState();
     const i = daysofweek.findIndex(weekDay => weekDay.name === day.name);
     let days = JSON.parse(JSON.stringify(daysofweek));
-    days[i].checked = true;
+    days[i].checked = !days[i].checked;
     saveState({ daysofweek: days });
   };
 
@@ -245,7 +245,6 @@ const Step3 = props => {
                             uncheckedIcon="circle-o"
                             title="checkbox 1"
                             checkedColor="red"
-                            //onPress={() => updateState(day)}
                             status={day.checked ? 'checked' : 'unchecked'}
                           />
                           <Text style={{ marginTop: 9, fontSize: 14 }}>

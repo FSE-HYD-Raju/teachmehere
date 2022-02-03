@@ -29,10 +29,10 @@ import {
 import ImagePicker from 'react-native-image-picker';
 import { Snackbar } from 'react-native-paper';
 import PageSpinner from '../../../components/common/PageSpinner';
+import { fetchReqFavpostedCounts } from '../../../redux/slices/profileSlice';
 
 export default function Profile({ route, navigation }) {
   const dispatch = useDispatch();
-  const { fromDelete } = route.params || {};
   const {
     userInfo,
     reqFavPostedCount,
@@ -46,29 +46,16 @@ export default function Profile({ route, navigation }) {
   const [load, setLoad] = React.useState(false);
 
   useEffect(() => {
-    if (!reqFavPostedCount._id || fromDelete) getReqFavpostedCounts();
+    if (!reqFavPostedCount._id) getReqFavpostedCounts();
     return () => setLoad(false);
   }, []);
 
   const getReqFavpostedCounts = () => {
-    fetch('https://teachmeproject.herokuapp.com/getReqFavPostedCounts', {
-      method: 'POST',
-      headers: {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+    dispatch(
+      fetchReqFavpostedCounts({
         uid: userInfo._id,
       }),
-    })
-      .then(response => response.json())
-      .then(responseJson => {
-        if (responseJson.length)
-          dispatch(setReqFavPostedCount(responseJson[0]));
-      })
-      .catch(error => {
-        console.error(error);
-      });
+    );
   };
 
   const logout = () => {

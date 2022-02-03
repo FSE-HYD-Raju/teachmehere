@@ -29,6 +29,7 @@ import {
   setRequestedSkills,
   setUserRating,
 } from '../redux/slices/profileSlice';
+import { setReqFavPostedCount } from '../redux/slices/loginSlice';
 import PageSpinner from '../components/common/PageSpinner';
 import firestore from '@react-native-firebase/firestore';
 import { DataTable } from 'react-native-paper';
@@ -166,7 +167,6 @@ export default function SkillDetail({ route, navigation }) {
     var categoryImage = homeData.categories.filter(
       cat => cat.category == skill.category,
     );
-    console.log('heloooooooooooo', categoryImage);
 
     const onShare = async () => {
       try {
@@ -259,6 +259,7 @@ export default function SkillDetail({ route, navigation }) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
+        uid: userInfo._id,
         _id: skill._id,
         status: 'DELETE',
       }),
@@ -266,8 +267,10 @@ export default function SkillDetail({ route, navigation }) {
       .then(response => response.json())
       .then(responseJson => {
         console.log(JSON.stringify(responseJson));
+        if (responseJson && responseJson.length)
+          dispatch(setReqFavPostedCount(responseJson[0]));
         setDeleteLoading(false);
-        navigation.navigate('Profile', { fromDelete: true });
+        navigation.navigate('Profile');
       })
       .catch(error => {
         setDeleteLoading(false);
@@ -426,6 +429,9 @@ export default function SkillDetail({ route, navigation }) {
   };
 
   const bodyComponent = () => {
+    console.log(userInfo._id);
+    console.log(skill);
+
     const showEdit =
       userInfo._id && userInfo._id == skill.uid && origin == 'posted';
     const showDelete =

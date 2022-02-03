@@ -128,14 +128,11 @@ const Step2 = props => {
                   value={formProps.values.country}
                   onSelect={value => {
                     formProps.setFieldValue('country', value);
-                    saveState({
-                      languages: [
-                        ...(getState().languages || []),
-                        value.language.name,
-                      ],
-                    });
+                    if (value.language && value.language.name)
+                      selectLanguage(value?.language?.name);
                   }}
                   maxHeight={200}
+                  clearValue={false}
                 />
                 <Text style={styles.errorText}>
                   {formProps.touched.country && formProps.errors.country}
@@ -241,8 +238,9 @@ const Step2 = props => {
                   data={allLaunguages}
                   displayKey="name"
                   placeholder="Select Language"
-                  onSelect={lang => selectLanguage(lang.name)}
+                  onSelect={lang => selectLanguage(lang?.name || lang)}
                   maxHeight={200}
+                  clearValue={true}
                 />
               </View>
               <View style={styles.btnContainer}>

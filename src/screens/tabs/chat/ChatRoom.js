@@ -128,57 +128,13 @@ export default function ChatRoom({ route, navigation }) {
         .then(() => {
           if (navigation.canGoBack())
             setTimeout(() => {
-              try {
-                navigation.pop();
-              } catch (e) {
-                navigation.reset({
-                  index: 0,
-                  routes: [{ name: 'ChatPage' }],
-                });
-              }
-              // if (thread.support) navigation.pop();
-              // // navigation.goBack()
-              // // navigation.navigate('Chat');
-              // else
-              //   navigation.reset({
-              //     index: 0,
-              //     routes: [{ name: 'ChatPage' }],
-              //   });
+              navigation.goBack();
+              navigation.navigate('Chat', { screen: 'ChatPage' });
             }, 100);
         });
     } else if (navigation.canGoBack()) {
-      try {
-        navigation.pop();
-      } catch (e) {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: 'ChatPage' }],
-        });
-      }
-      console.log('in else if', thread.support);
-
-      // if (thread.support) {
-      //   console.log(navigation);
-      //   if (navigation.pop()) {
-      //     navigation.pop();
-      //   } else {
-      //     navigation.reset({
-      //       index: 0,
-      //       routes: [{ name: 'ChatPage' }],
-      //     });
-      //   }
-      // }
-      // navigation.reset({
-      //   index: 0,
-      //   routes: [{ name: 'ChatPage' }],
-      // });
-      // navigation.goBack()
-      // navigation.navigate('Chat');
-      // else
-      //   navigation.reset({
-      //     index: 0,
-      //     routes: [{ name: 'ChatPage' }],
-      //   });
+      navigation.goBack();
+      navigation.navigate('Chat', { screen: 'ChatPage' });
     }
   };
 

@@ -178,7 +178,7 @@ const Steps = props => {
   };
 
   return (
-    <ScrollView>
+    <ScrollView keyboardShouldPersistTaps={'handled'}>
       <AnimatedMultistep
         steps={allSteps}
         onFinish={finish}

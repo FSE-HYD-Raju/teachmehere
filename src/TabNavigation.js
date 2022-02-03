@@ -30,6 +30,7 @@ import {
   loadUserInfo,
   setDeviceToken,
 } from './redux/slices/loginSlice';
+import { fetchReqFavpostedCounts } from './redux/slices/profileSlice';
 import { getRecentSearches } from './redux/slices/searchSlice';
 import {
   fetchInitialDataWhenAppLoading,
@@ -71,6 +72,8 @@ const TabNavigation = props => {
     const userData = await getAsyncData('userInfo');
     if (userData) {
       dispatch(loadUserInfo(userData));
+      if (userData?._id)
+        dispatch(fetchReqFavpostedCounts({ uid: userData._id }));
     }
   };
 

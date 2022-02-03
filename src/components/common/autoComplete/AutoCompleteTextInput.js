@@ -33,6 +33,7 @@ const AutoComplete = props => {
     floatBottom,
     editable = true,
     dropDownIconColor = defaultAccentColor,
+    clearValue = false,
   } = props;
 
   const [filteredData, setFilteredData] = useState([]);
@@ -54,17 +55,18 @@ const AutoComplete = props => {
           e[displayKey].toUpperCase().includes(str.toUpperCase()),
       );
     setFilteredData(fData);
+    setSelectedItem(str);
   };
 
   useEffect(() => {
-    if (data && data.length > 0 && data[0] !== filterData[0]) {
-      data.length > 0 && setFilteredData(data);
+    if (data && data.length && data[0] !== filterData[0]) {
+      setFilteredData(data);
     }
   }, [data]);
 
   useEffect(() => {
     if (!value || (Object.keys(value).length !== 0 && value !== selectedItem)) {
-      setSelectedItem(value);
+      setSelectedItem(value?.name);
     }
   }, [value]);
 
@@ -81,9 +83,13 @@ const AutoComplete = props => {
   const handleSelection = item => {
     setShowSuggestions(false);
     Keyboard.dismiss();
-    setSelectedItem(item);
+    setFilteredData(data);
+    setSelectedItem(item?.name);
     setTimeout(() => {
-      onSelect && onSelect(item ? item : {});
+      onSelect && onSelect(item ? item : selectedItem);
+      if (clearValue) {
+        setSelectedItem('');
+      }
     }, 0);
   };
 
@@ -92,7 +98,7 @@ const AutoComplete = props => {
       displaySuggestions(undefined);
     }
     if (selectedItem) {
-      setSelectedItem(undefined);
+      setSelectedItem('');
     }
     setIsFocused(true);
   };
@@ -100,7 +106,10 @@ const AutoComplete = props => {
   const handleOnSubmitEditing = () => {
     setShowSuggestions(false);
     setTimeout(() => {
-      onSelect && onSelect(undefined);
+      if (selectedItem) {
+        onSelect && onSelect(selectedItem);
+        clearValue && setSelectedItem('');
+      }
     }, 0);
   };
 
@@ -127,11 +136,8 @@ const AutoComplete = props => {
           maxHeight: maxHeight || spaceAboveElement - heightTopThreshold,
         };
       }
-      if (str) {
-        filter;
-      } else {
-        setShowSuggestions(true);
-      }
+
+      setShowSuggestions(true);
     });
   };
   return (
@@ -151,25 +157,23 @@ const AutoComplete = props => {
           flex: 1,
           height: 47,
         }}
-        value={
-          selectedItem
-            ? selectedItem[displayKey]
-              ? selectedItem[displayKey]
-              : undefined
-            : undefined
-        }
+        value={selectedItem}
         onChangeText={data => filterData(data)}
-        multiline={selectedItem ? true : false}
         onFocus={handleOnFocus}
-        onBlur={() => setIsFocused(false)}
+        onBlur={() => {
+          setIsFocused(false);
+          setShowSuggestions(false);
+        }}
         clearTextOnFocus="true"
       />
 
       {showSuggestions && (
-        <ScrollView
-          style={[styles.suggestionArea, sugestionsListPos.current]}
-          keyboardShouldPersistTaps="handled">
+        <View style={[styles.suggestionArea, sugestionsListPos.current]}>
           <FlatList
+            nestedScrollEnabled
+            scrollEnabled={true}
+            scrollToOverflowEnabled
+            keyboardShouldPersistTaps={'handled'}
             keyExtractor={(item, index) => index.toString()}
             initialNumToRender={10}
             onEndReached={_handleLoadMore}
@@ -189,7 +193,7 @@ const AutoComplete = props => {
               </TouchableOpacity>
             )}
           />
-        </ScrollView>
+        </View>
       )}
     </View>
   );

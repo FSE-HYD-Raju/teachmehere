@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import { postSkillUrl, updateSkillUrl } from '../urls';
+import { setReqFavPostedCount } from '../slices/loginSlice';
 
 export const initialState = {
   isPostQueryActive: false,
@@ -48,6 +49,9 @@ export function postNewSkill(param) {
     try {
       const response = await axios.post(postSkillUrl, param.postData);
       if (response) {
+        if (response.data && response.data.length) {
+          dispatch(setReqFavPostedCount(response.data[0]));
+        }
         dispatch(postSkillSuccess());
         param.onSuccess();
       }
