@@ -776,8 +776,7 @@ export default function SkillDetail({ route, navigation }) {
           color={'black'}
           labelStyle={globalStyles.btnLabelStyle}
           onPress={requestBtn}>
-          {' '}
-          Request
+          <Text>Send Chat Request</Text>
         </Button>
       );
     }
