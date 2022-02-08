@@ -20,10 +20,10 @@ export default function CourseListCard({
   const userProfilePic =
     course && course.displaypic
       ? {
-          uri: course.displaypic,
-        }
+        uri: course.displaypic,
+      }
       : // { uri: "https://bootdey.com/img/Content/avatar/avatar7.png" }
-        require('../../assets/img/default-mask-avatar.png');
+      require('../../assets/img/default-mask-avatar.png');
   return (
     <TouchableOpacity onPress={courseClicked}>
       <View style={styles.card}>

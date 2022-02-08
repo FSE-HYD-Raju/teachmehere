@@ -33,7 +33,7 @@ export default function ChangeProfilePage({ navigation }) {
   const [eyeicon, seteyeicon] = React.useState('eye');
   const [eyeicon2, seteyeicon2] = React.useState('eye');
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-  const buttons = ['Edit Profile', 'Change Password'];
+  const buttons = ['Edit Profile', 'Update Password'];
 
   const toggleEyeIcon = () => {
     if (eyeicon === 'eye') {
@@ -282,7 +282,7 @@ export default function ChangeProfilePage({ navigation }) {
               letterSpacing: 1,
               textAlign: 'center',
             }}>
-            Change Profile
+            Update Profile
           </Text>
         </View>
       </View>

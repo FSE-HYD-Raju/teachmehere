@@ -48,6 +48,12 @@ const Step1 = props => {
     saveState({ contents: newContents });
   };
 
+  const contentsChange = (val, index) => {
+    let oriContents = contents
+    oriContents[index] = val
+    saveState({ contents: [...oriContents] })
+  }
+
   return (
     <View>
       <Appbar.Header theme={DarkTheme} style={{ backgroundColor: 'white' }}>
@@ -142,12 +148,12 @@ const Step1 = props => {
               </Text>
               <Text style={styles.label}>Contents</Text>
               {!!contents &&
-                contents.map(data => {
+                contents.map((data, index) => {
                   return (
                     <View style={styles.column}>
                       <View style={styles.bullet}>
                         <Text style={{ fontSize: 22 }}>{'\u2022' + ' '}</Text>
-                        <Text style={{ width: '90%' }}>{data}</Text>
+                        <TextInput style={{ width: '90%' }} value={data} onChangeText={(val) => contentsChange(val, index)} multiline />
                       </View>
                       <TouchableOpacity
                         style={styles.removeContent}
@@ -164,6 +170,7 @@ const Step1 = props => {
                   placeholder={'Add content line'}
                   value={content}
                   onChangeText={val => setContent(val)}
+                  multiline
                 />
                 <TouchableOpacity onPress={() => addContent()}>
                   <Icon

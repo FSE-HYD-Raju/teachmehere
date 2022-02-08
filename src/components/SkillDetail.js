@@ -201,7 +201,7 @@ export default function SkillDetail({ route, navigation }) {
           source={
             categoryImage && categoryImage.length
               ? Illustrations[categoryImage[0].illustration]
-              : require('../assets/img/skill.jpeg')
+              : require('../assets/img/charfromhome.png')
           }
           style={styles.imgStyle}
         />
@@ -209,14 +209,14 @@ export default function SkillDetail({ route, navigation }) {
           <Icons
             name={'keyboard-backspace'}
             size={27}
-            color={'white'}
-            style={{ fontWeight: 'bold' }}
+            color={'black'}
+            style={{ fontWeight: 'bold', }}
             onPress={() => navigation.goBack()}
           />
           <MaterialCommunityIcons
             name="share-variant"
             size={26}
-            color={'white'}
+            color={'black'}
             onPress={() => onShare()}
           />
         </View>
@@ -295,7 +295,7 @@ export default function SkillDetail({ route, navigation }) {
                 ? { uri: skill.displaypic }
                 : require('../assets/img/default-mask-avatar.png')
             }
-            // source={require('../assets/img/defaultAvatar.png')}
+          // source={require('../assets/img/defaultAvatar.png')}
           />
           <Text
             style={{
@@ -372,7 +372,9 @@ export default function SkillDetail({ route, navigation }) {
     return (
       <DataTable>
         <DataTable.Header>
-          <DataTable.Title>Other Info</DataTable.Title>
+          <Text style={{ paddingVertical: 10, fontSize: 20, fontWeight: 'bold' }}>
+            Details
+          </Text>
         </DataTable.Header>
         <DataTable.Row>
           <DataTable.Cell style={{ fontSize: 90 }}>Skill Level</DataTable.Cell>
@@ -584,7 +586,7 @@ export default function SkillDetail({ route, navigation }) {
         request_status: 'PENDING',
         type: 'REQUEST',
         createdAt: new Date().getTime(),
-        message: 'Lets be friends..!',
+        message: 'Would love to learn from you..!',
         courseid: skill._id,
       };
 
@@ -735,7 +737,7 @@ export default function SkillDetail({ route, navigation }) {
             createdAt: Date.now(),
             system: true,
           })
-          .then(() => {});
+          .then(() => { });
       });
 
       var itemObj = {
@@ -787,14 +789,14 @@ export default function SkillDetail({ route, navigation }) {
         {/* <Text>{JSON.stringify(requestedObj)}</Text> */}
         {(requestedObj.request_status == 'REJECTED' ||
           requestedObj.request_status == 'PENDING') && (
-          <Button
-            disabled={true}
-            mode="contained"
-            color={'black'}
-            labelStyle={globalStyles.btnLabelStyle}>
-            {requestedObj.request_status}
-          </Button>
-        )}
+            <Button
+              disabled={true}
+              mode="contained"
+              color={'black'}
+              labelStyle={globalStyles.btnLabelStyle}>
+              {requestedObj.request_status}
+            </Button>
+          )}
         {requestedObj.request_status == 'ACCEPTED' && (
           <Button
             mode="contained"
@@ -879,7 +881,9 @@ const styles = StyleSheet.create({
   },
   imgStyle: {
     height: 200,
-    // width: '100%',
+    // resizeMode: 'stretch',
+    resizeMode: 'cover',
+    width: '100%',
     // opacity: 0.7,
   },
   skillName: {

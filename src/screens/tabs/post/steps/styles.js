@@ -113,6 +113,7 @@ export default StyleSheet.create({
     marginTop: 5,
     alignItems: 'center',
     padding: 10,
+    paddingVertical: 4,
     paddingLeft: 10,
     borderRadius: 10,
   },

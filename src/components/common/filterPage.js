@@ -395,7 +395,7 @@ export default function FilterPage({ onFilterClose, applyFilter, clearFilter }) 
                 >
                     <View style={styles.recentSearchsItem}                    >
                         <View style={{ flexDirection: 'row', justifyContent: "space-between", paddingRight: 16 }}>
-                            <Rating type='star' ratingTextColor="black" showRating imageSize={20} startingValue={minRatingObj} style={{height: 30}} onFinishRating={(rating) => setMinRatingObj(rating)} />
+                            <Rating type='star' ratingTextColor="black" showRating imageSize={20} startingValue={minRatingObj} style={{ height: 30 }} onFinishRating={(rating) => setMinRatingObj(rating)} />
                         </View>
                     </View>
                 </List.Accordion>
@@ -477,7 +477,7 @@ export default function FilterPage({ onFilterClose, applyFilter, clearFilter }) 
                         small={true}
                         icon="close"
                         label="Clear"
-                        style={{ backgroundColor: "white"}}
+                        style={{ backgroundColor: "white" }}
                         color="rgb(0, 150, 136)"
                         onPress={() => clearFilterObj()}
                     />
@@ -520,7 +520,7 @@ export default function FilterPage({ onFilterClose, applyFilter, clearFilter }) 
                 {footerButtonsComponent()}
 
             </ScrollView>
-        </View >
+        </View>
     );
 }
 
@@ -552,7 +552,7 @@ const styles = StyleSheet.create({
         letterSpacing: 1,
         fontFamily: "sans-serif",
         paddingLeft: 40,
-        alignItems:"center"
+        alignItems: "center"
     },
     headerComponent: {
         // flex: 1,
@@ -560,7 +560,8 @@ const styles = StyleSheet.create({
         padding: 8,
         height: 50,
         // backgroundColor: "rgb(0, 150, 136)",
-        backgroundColor: "rgb(3, 218, 196)",
+        // backgroundColor: "rgb(3, 218, 196)",
+        backgroundColor: '#509A9C',
         // width: 80,
         alignItems: 'center',
         // justifyContent: "center",

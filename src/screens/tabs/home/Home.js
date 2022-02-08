@@ -19,7 +19,7 @@ import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import IconMaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import CategoryChipView from '../../../components/common/CategoryChipView';
-import { useSelector , useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { homeSelector } from '../../../redux/slices/homeSlice';
 import messaging from '@react-native-firebase/messaging';
 import { loginSelector } from '../../../redux/slices/loginSlice';
@@ -30,7 +30,7 @@ import { chatSelector } from '../../../redux/slices/chatSlice';
 import { Illustrations } from '../../../assets/illustrations';
 
 import { getRecentSearches } from '../../../redux/slices/searchSlice';
-import {   fetchInitialDataWhenAppLoading, fetchPostedSkills } from '../../../redux/slices/homeSlice';
+import { fetchInitialDataWhenAppLoading, fetchPostedSkills } from '../../../redux/slices/homeSlice';
 
 export default function Home(props) {
   const { homeData, loading, homeSkillsData } = useSelector(homeSelector);
@@ -149,8 +149,8 @@ export default function Home(props) {
       if (remoteMessage.messageId !== lastMessageId) {
         lastMessageId = remoteMessage.messageId
         PushNotification.localNotification({
-          // largeIcon: "ic_foreground",
-          smallIcon: 'ic_foreground',
+          largeIcon: "ic_launcher",
+          smallIcon: 'ic_launcher',
           autoCancel: true,
           bigText: remoteMessage.data.body,
           // subText: remoteMessage.data.body,
@@ -400,17 +400,17 @@ export default function Home(props) {
     }
   };
 
-  
+
   return (
     <View style={styles.container}>
       <ScrollView
         refreshControl={
-              <RefreshControl
-                refreshing={false}
-                onRefresh={loadInitialData}
-                
-              />
-            }
+          <RefreshControl
+            refreshing={false}
+            onRefresh={loadInitialData}
+
+          />
+        }
         onLayout={() => setScreenWidth(Dimensions.get('window').width)}>
         {headerComponent()}
         {carouselComponent()}

@@ -61,6 +61,7 @@ const Step3 = props => {
         case 'startDate':
           saveState({
             startDate: moment(selectedValue).format('L'),
+            endDate: null
           });
           break;
         case 'endDate':
@@ -206,8 +207,8 @@ const Step3 = props => {
                   testID="dateTimePicker"
                   value={date}
                   mode={mode}
-                  minimumDate={new Date()}
-                  display="spinner"
+                  minimumDate={type === 'startDate' ? new Date() : new Date(getState().startDate)}
+                  display="default"
                   onChange={(event, selectedValue) =>
                     handleDateTimeChange(event, selectedValue)
                   }

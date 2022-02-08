@@ -546,6 +546,7 @@ export default function ChatRoom({ route, navigation }) {
     // }
 
     navigation.goBack();
+    navigation.navigate('Chat', { screen: 'ChatPage' });
     dispatch(setLoading(false));
     return;
   };
@@ -725,7 +726,7 @@ export default function ChatRoom({ route, navigation }) {
             <Icons
               name={'dots-vertical'} // color="#fff"
               size={25}
-              // style={{ paddingRight: 5 }}
+            // style={{ paddingRight: 5 }}
             />
           }
           destructiveIndex={1}
@@ -770,17 +771,17 @@ export default function ChatRoom({ route, navigation }) {
           // renderSystemMessage={renderSystemMessage}
           showAvatarForEveryMessage={false}
           renderAvatarOnTop={true}
-          // renderActions={() => (
-          //     <Feather
-          //         style={styles.uploadImage}
-          //         onPress={this.uploadImage}
-          //         name='image'
-          //         size={30}
-          //         color='#000'
-          //     />
-          // )}
-          // bottomOffset={155}
-          // isTyping={true}
+        // renderActions={() => (
+        //     <Feather
+        //         style={styles.uploadImage}
+        //         onPress={this.uploadImage}
+        //         name='image'
+        //         size={30}
+        //         color='#000'
+        //     />
+        // )}
+        // bottomOffset={155}
+        // isTyping={true}
         />
       )}
     </View>

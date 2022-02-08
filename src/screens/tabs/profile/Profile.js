@@ -210,7 +210,7 @@ export default function Profile({ route, navigation }) {
         <Text style={styles.userDesc}>
           {userInfo.description
             ? userInfo.description
-            : 'Your description will be shown here! You can add your description from change profile page!'}
+            : 'Your description will be shown here! You can add your description from update profile page!'}
         </Text>
       </View>
     );
@@ -276,7 +276,7 @@ export default function Profile({ route, navigation }) {
         <View style={styles.accountContainer}>
           <TouchableOpacity>
             <ListItem
-              title={'Change Profile'}
+              title={'Update Profile'}
               leftIcon={
                 <Icons
                   name={'account-arrow-right-outline'}

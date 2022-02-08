@@ -28,7 +28,7 @@ export default function SearchPage({ navigation }) {
   // clearAsyncData()
 
   const backButtonHandler = () => {
-    return BackHandler.addEventListener('hardwareBackPress', function() {
+    return BackHandler.addEventListener('hardwareBackPress', function () {
       if (openFilterPage) {
         setOpenFilterPage(false);
         return true;
@@ -88,7 +88,7 @@ export default function SearchPage({ navigation }) {
     if (filterObj && filterObj['$and'] && filterObj['$and'].length)
       filter = filterObj;
     dispatch(setFilterObj(filterObj));
-    if (searchQuery) fetchData(searchQuery, filter);
+    fetchData(searchQuery, filter);
   };
 
   const clearFilter = () => {
@@ -121,7 +121,7 @@ export default function SearchPage({ navigation }) {
         // placeholderStyle={{ fontSize: 256 }}
         onChangeText={searchFun}
         value={searchQuery}
-        style={{marginRight: 30}}
+        style={{ marginRight: 30 }}
       />
     );
   };

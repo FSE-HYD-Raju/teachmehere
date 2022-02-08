@@ -67,7 +67,7 @@ const Step2 = props => {
       languagesToUpdate.splice(index, 1);
     } else {
       setLangError(true);
-      setTimeout(function() {
+      setTimeout(function () {
         setLangError(false);
       }, 3000);
     }
@@ -125,7 +125,7 @@ const Step2 = props => {
                   displayKey="name"
                   label={'Country*'}
                   placeholder="Select a country"
-                  value={formProps.values.country}
+                  value={formProps.values?.country?.name}
                   onSelect={value => {
                     formProps.setFieldValue('country', value);
                     if (value.language && value.language.name)
