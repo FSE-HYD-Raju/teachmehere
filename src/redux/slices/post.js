@@ -50,7 +50,13 @@ export function postNewSkill(param) {
       const response = await axios.post(postSkillUrl, param.postData);
       if (response) {
         if (response.data && response.data.length) {
-          dispatch(setReqFavPostedCount(response.data[0]));
+          let data = response.data[0];
+          let obj = {
+            coursedetailscount: data.coursedetailscount,
+            requestedcoursescount: data.requestedcoursescount,
+            myfavoritescount: data.myfavoritescount,
+          };
+          dispatch(setReqFavPostedCount(obj));
         }
         dispatch(postSkillSuccess());
         param.onSuccess();

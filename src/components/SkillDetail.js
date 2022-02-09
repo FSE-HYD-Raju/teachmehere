@@ -210,7 +210,7 @@ export default function SkillDetail({ route, navigation }) {
             name={'keyboard-backspace'}
             size={27}
             color={'black'}
-            style={{ fontWeight: 'bold', }}
+            style={{ fontWeight: 'bold' }}
             onPress={() => navigation.goBack()}
           />
           <MaterialCommunityIcons
@@ -295,7 +295,7 @@ export default function SkillDetail({ route, navigation }) {
                 ? { uri: skill.displaypic }
                 : require('../assets/img/default-mask-avatar.png')
             }
-          // source={require('../assets/img/defaultAvatar.png')}
+            // source={require('../assets/img/defaultAvatar.png')}
           />
           <Text
             style={{
@@ -372,7 +372,8 @@ export default function SkillDetail({ route, navigation }) {
     return (
       <DataTable>
         <DataTable.Header>
-          <Text style={{ paddingVertical: 10, fontSize: 20, fontWeight: 'bold' }}>
+          <Text
+            style={{ paddingVertical: 10, fontSize: 20, fontWeight: 'bold' }}>
             Details
           </Text>
         </DataTable.Header>
@@ -737,7 +738,7 @@ export default function SkillDetail({ route, navigation }) {
             createdAt: Date.now(),
             system: true,
           })
-          .then(() => { });
+          .then(() => {});
       });
 
       var itemObj = {
@@ -789,14 +790,14 @@ export default function SkillDetail({ route, navigation }) {
         {/* <Text>{JSON.stringify(requestedObj)}</Text> */}
         {(requestedObj.request_status == 'REJECTED' ||
           requestedObj.request_status == 'PENDING') && (
-            <Button
-              disabled={true}
-              mode="contained"
-              color={'black'}
-              labelStyle={globalStyles.btnLabelStyle}>
-              {requestedObj.request_status}
-            </Button>
-          )}
+          <Button
+            disabled={true}
+            mode="contained"
+            color={'black'}
+            labelStyle={globalStyles.btnLabelStyle}>
+            {requestedObj.request_status}
+          </Button>
+        )}
         {requestedObj.request_status == 'ACCEPTED' && (
           <Button
             mode="contained"

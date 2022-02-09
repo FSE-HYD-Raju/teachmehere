@@ -25,8 +25,7 @@ export default function PostedCoursesPage({ navigation }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (userInfo && userInfo._id)
-      getPostedCourses(userInfo._id);
+    if (userInfo && userInfo._id) getPostedCourses(userInfo._id);
   }, []);
 
   const getPostedCourses = uid => {
@@ -66,7 +65,7 @@ export default function PostedCoursesPage({ navigation }) {
   const courseClicked = course => {
     navigation.navigate('SkillDetail', {
       skill: course,
-      origin: 'posted'
+      origin: 'posted',
     });
   };
 
@@ -95,7 +94,7 @@ export default function PostedCoursesPage({ navigation }) {
                 onRefresh={() => getPostedCourses(userInfo._id)}
               />
             }
-          // style={{ marginBottom: 80 }}
+            // style={{ marginBottom: 80 }}
           />
         </View>
       </TouchableWithoutFeedback>
@@ -145,7 +144,12 @@ export default function PostedCoursesPage({ navigation }) {
           // color="#fff"
           size={27}
           style={{ flex: 0.2 }}
-          onPress={() => navigation.goBack()}
+          onPress={() =>
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'Profile' }],
+            })
+          }
         />
         <View
           style={{
@@ -165,8 +169,8 @@ export default function PostedCoursesPage({ navigation }) {
       {loading
         ? loadingComponent()
         : postedSkills.length
-          ? cardListComponent()
-          : noDataFoundComponent()}
+        ? cardListComponent()
+        : noDataFoundComponent()}
     </View>
   );
 }
