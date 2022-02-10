@@ -36,8 +36,9 @@ export default function ChatRoom({ route, navigation }) {
   const [didBlock, setDidBlock] = useState(false);
   const [gotBlocked, setGotBlocked] = useState(false);
 
-  const { chatResults, getChatsEventCalled } = useSelector(chatSelector);
-  const loading = false;
+  const { chatResults, getChatsEventCalled, loading } = useSelector(
+    chatSelector,
+  );
   const dispatch = useDispatch();
 
   const { thread } = route.params || {};
@@ -726,7 +727,7 @@ export default function ChatRoom({ route, navigation }) {
             <Icons
               name={'dots-vertical'} // color="#fff"
               size={25}
-            // style={{ paddingRight: 5 }}
+              // style={{ paddingRight: 5 }}
             />
           }
           destructiveIndex={1}
@@ -771,17 +772,17 @@ export default function ChatRoom({ route, navigation }) {
           // renderSystemMessage={renderSystemMessage}
           showAvatarForEveryMessage={false}
           renderAvatarOnTop={true}
-        // renderActions={() => (
-        //     <Feather
-        //         style={styles.uploadImage}
-        //         onPress={this.uploadImage}
-        //         name='image'
-        //         size={30}
-        //         color='#000'
-        //     />
-        // )}
-        // bottomOffset={155}
-        // isTyping={true}
+          // renderActions={() => (
+          //     <Feather
+          //         style={styles.uploadImage}
+          //         onPress={this.uploadImage}
+          //         name='image'
+          //         size={30}
+          //         color='#000'
+          //     />
+          // )}
+          // bottomOffset={155}
+          // isTyping={true}
         />
       )}
     </View>
@@ -832,5 +833,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     flex: 1,
+    position: 'absolute',
+    zIndex: 99999,
+    width: '100%',
+    height: '100%',
   },
 });
