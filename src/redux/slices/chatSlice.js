@@ -16,6 +16,7 @@ export const initialState = {
   newChatList: [],
   currentOpenedChat: {},
   getChatsEventCalled: false,
+  unsubscribeSnapshot: null
 };
 
 const chatSlice = createSlice({
@@ -58,6 +59,9 @@ const chatSlice = createSlice({
     setCurrentOpenedChat: (state, { payload }) => {
       state.currentOpenedChat = payload;
     },
+    setUnsubscribeSnapshot: (state, { payload }) => {
+      state.unsubscribeSnapshot = payload;
+    },
   },
 });
 
@@ -70,6 +74,7 @@ export const {
   setLoading,
   setNewChatList,
   setCurrentOpenedChat,
+  setUnsubscribeSnapshot
 } = chatSlice.actions;
 
 export const chatSelector = state => state.chat;
@@ -81,6 +86,7 @@ export function fetchChats(userInfo) {
 
     dispatch(getChats());
     try {
+      // let unsubscribeSnapshot =
       firestore()
         .collection('THREADS')
         .where('ids', 'array-contains', userInfo._id)
@@ -128,6 +134,7 @@ export function fetchChats(userInfo) {
           // console.log(JSON.stringify(res))
           dispatch(getChatsSuccess(res));
         });
+      // dispatch(setUnsubscribeSnapshot(unsubscribeSnapshot))
     } catch (error) {
       dispatch(getChatsFailure());
     }

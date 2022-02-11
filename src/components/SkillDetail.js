@@ -20,7 +20,7 @@ import { random_rgba } from '../utils/random_rgba';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocale } from 'yup';
 import { homeSelector } from '../redux/slices/homeSlice';
-import { loginSelector } from '../redux/slices/loginSlice';
+import { loginSelector, setReqFavPostedCount } from '../redux/slices/loginSlice';
 import IconMaterialIcons from 'react-native-vector-icons/FontAwesome';
 import { Illustrations } from '../assets/illustrations';
 
@@ -29,7 +29,6 @@ import {
   setRequestedSkills,
   setUserRating,
 } from '../redux/slices/profileSlice';
-import { setReqFavPostedCount } from '../redux/slices/loginSlice';
 import PageSpinner from '../components/common/PageSpinner';
 import firestore from '@react-native-firebase/firestore';
 import { DataTable } from 'react-native-paper';
@@ -45,6 +44,7 @@ export default function SkillDetail({ route, navigation }) {
   const [visibleSnackbar, setVisibleSnackbar] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const [requestedObj, setRequestedObj] = React.useState(null);
+  const [areConnected, setAreConnected] = React.useState(false);
   const [userRating, setCurrentRating] = useState(0);
   const [ratingLoading, setRatingLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -80,6 +80,7 @@ export default function SkillDetail({ route, navigation }) {
 
   const getRequetedCourses = uid => {
     setLoading(true);
+    setAreConnected(false)
     fetch('https://teachmeproject.herokuapp.com/requestedCoursesByid', {
       method: 'POST',
       headers: {
@@ -92,11 +93,14 @@ export default function SkillDetail({ route, navigation }) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log(JSON.stringify(responseJson));
         if (responseJson && responseJson.length) {
           dispatch(setRequestedSkills(responseJson));
         }
-        let reqObj = responseJson.filter(obj => obj.courseuid == skill.uid);
+        let reqObj = responseJson.filter(obj => obj._id == skill._id);
+        let connectedOj = responseJson.filter(obj => obj.courseuid == skill.uid && obj.request_status === "ACCEPTED");
+        if (connectedOj.length) {
+          setAreConnected(true)
+        }
         if (reqObj.length) {
           setRequestedObj(reqObj[0]);
         }
@@ -122,7 +126,6 @@ export default function SkillDetail({ route, navigation }) {
     })
       .then(response => response.json())
       .then(responseJson => {
-        console.log('ratings', JSON.stringify(responseJson));
         if (responseJson && responseJson.length) {
           dispatch(setUserRating(responseJson));
         } else {
@@ -295,7 +298,7 @@ export default function SkillDetail({ route, navigation }) {
                 ? { uri: skill.displaypic }
                 : require('../assets/img/default-mask-avatar.png')
             }
-            // source={require('../assets/img/defaultAvatar.png')}
+          // source={require('../assets/img/defaultAvatar.png')}
           />
           <Text
             style={{
@@ -432,8 +435,8 @@ export default function SkillDetail({ route, navigation }) {
   };
 
   const bodyComponent = () => {
-    console.log(userInfo._id);
-    console.log(skill);
+    // console.log(userInfo._id);
+    // console.log(skill);
 
     const showEdit =
       userInfo._id && userInfo._id == skill.uid && origin == 'posted';
@@ -569,7 +572,9 @@ export default function SkillDetail({ route, navigation }) {
         .then(response => response.json())
         .then(responseJson => {
           getRequetedCourses(userInfo._id);
-          addFirebaseNotification(skill);
+          if (!areConnected) {
+            addFirebaseNotification(skill);
+          }
         })
         .catch(error => {
           setVisibleSnackbar('Something went wrong!');
@@ -587,7 +592,7 @@ export default function SkillDetail({ route, navigation }) {
         request_status: 'PENDING',
         type: 'REQUEST',
         createdAt: new Date().getTime(),
-        message: 'Would love to learn from you..!',
+        message: 'Want to learn from you..!',
         courseid: skill._id,
       };
 
@@ -688,8 +693,8 @@ export default function SkillDetail({ route, navigation }) {
           if (!exists) {
             sendMessage();
           } else {
-            console.log('elseeeeeeeeeeeeeeeeeeeeeee');
-            console.log(itemObj);
+            // console.log('elseeeeeeeeeeeeeeeeeeeeeee');
+            // console.log(itemObj);
             setLoading(false);
             // navigation.navigate('ChatRoom', { thread: itemObj });
             navigation.navigate('Chat', {
@@ -738,7 +743,7 @@ export default function SkillDetail({ route, navigation }) {
             createdAt: Date.now(),
             system: true,
           })
-          .then(() => {});
+          .then(() => { });
       });
 
       var itemObj = {
@@ -779,7 +784,7 @@ export default function SkillDetail({ route, navigation }) {
           color={'black'}
           labelStyle={globalStyles.btnLabelStyle}
           onPress={requestBtn}>
-          <Text>Send Chat Request</Text>
+          <Text>Interested To Learn</Text>
         </Button>
       );
     }
@@ -788,17 +793,10 @@ export default function SkillDetail({ route, navigation }) {
       <View>
         {/* <View style={globalStyles.btnStyle}> */}
         {/* <Text>{JSON.stringify(requestedObj)}</Text> */}
-        {(requestedObj.request_status == 'REJECTED' ||
+        {/* {(requestedObj.request_status == 'REJECTED' ||
           requestedObj.request_status == 'PENDING') && (
-          <Button
-            disabled={true}
-            mode="contained"
-            color={'black'}
-            labelStyle={globalStyles.btnLabelStyle}>
-            {requestedObj.request_status}
-          </Button>
-        )}
-        {requestedObj.request_status == 'ACCEPTED' && (
+          )} */}
+        {areConnected ? (
           <Button
             mode="contained"
             color={'black'}
@@ -806,7 +804,15 @@ export default function SkillDetail({ route, navigation }) {
             onPress={checkIfChatExists}>
             Message
           </Button>
-        )}
+        ) :
+          <Button
+            disabled={true}
+            mode="contained"
+            color={'black'}
+            labelStyle={globalStyles.btnLabelStyle}>
+            {requestedObj.request_status}
+          </Button>
+        }
         {/* </View> */}
       </View>
     );

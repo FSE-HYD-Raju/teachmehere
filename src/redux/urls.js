@@ -8,6 +8,7 @@ export const searchUrl = `${SERVER_URL}/searchall`;
 export const topCategoriesUrl = `${SERVER_URL}/getTopCategories`;
 //Auth
 export const authLoginUrl = `${SERVER_URL}/authorizeUserDetails`;
+export const logoutUrl = `${SERVER_URL}/logout`;
 export const validateNewUserUrl = `${SERVER_URL}/validateNewUser`;
 export const validateOtpUrl = `${SERVER_URL}/registerUserDetails`;
 export const forgotPasswordUrl = `${SERVER_URL}/forgotPassword`;

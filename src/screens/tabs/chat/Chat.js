@@ -122,7 +122,7 @@ export default function Chat({ navigation }) {
             color: "#105883",
           }}>
             You have no chats!
-            </Text>
+          </Text>
           <Text style={{
             justifyContent: 'center',
             alignItems: 'center',

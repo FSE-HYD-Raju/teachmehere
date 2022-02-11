@@ -22,6 +22,9 @@ import {
   logoutSuccess,
 } from '../../../redux/slices/loginSlice';
 import {
+  profileSelector
+} from '../../../redux/slices/profileSlice'
+import {
   onChangeImagePressed,
   changeProfileSelector,
 } from '../../../redux/slices/changeProfileSlice';
@@ -39,6 +42,9 @@ export default function Profile({ route, navigation }) {
     devicetoken,
     profileLoading,
   } = useSelector(loginSelector);
+  const {
+    requestedSkills,
+  } = useSelector(profileSelector);
   const { loading } = useSelector(changeProfileSelector);
   console.log('profileLoading', profileLoading);
   // const { reqFavPostedCount } = useSelector(profileSelector);
@@ -62,6 +68,7 @@ export default function Profile({ route, navigation }) {
     setLoad(true);
     dispatch(
       logOutUser({
+        uid: userInfo._id,
         onSuccess: () => {
           navigation.reset({
             index: 0,
@@ -241,7 +248,7 @@ export default function Profile({ route, navigation }) {
             onPress={() => navigation.navigate('RequestedCourses')}>
             <Surface style={styles.surfaceReq}>
               <Text style={styles.statValue}>
-                {reqFavPostedCount.requestedcoursescount}
+                {requestedSkills ? requestedSkills.length : reqFavPostedCount.requestedcoursescount}
               </Text>
               <Text style={styles.statText}>Requested {'\n'}Skills</Text>
             </Surface>

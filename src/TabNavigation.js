@@ -154,16 +154,16 @@ const TabNavigation = props => {
     );
   }
 
-  function ChatStackScreen() {
-    return (
-      <Stack.Navigator headerMode={'none'} initialRouteName={'ChatPage'}>
-        <Stack.Screen name="ChatPage" component={Chat} />
-        <Stack.Screen name="ChatRoom" component={ChatRoom} />
-        <Stack.Screen name="NewChat" component={NewChat} />
-        <Stack.Screen name="UserDetailsPage" component={UserDetailsPage} />
-      </Stack.Navigator>
-    );
-  }
+  // function ChatStackScreen({ navigation }) {
+  //   return (
+  //     <Stack1.Navigator headerMode={'none'} initialRouteName={'ChatPage'} >
+  //       <Stack1.Screen name="ChatPage" component={Chat} />
+  //       <Stack1.Screen name="ChatRoom" component={ChatRoom} />
+  //       <Stack1.Screen name="NewChat" component={NewChat} />
+  //       <Stack1.Screen name="UserDetailsPage" component={UserDetailsPage} />
+  //     </Stack1.Navigator>
+  //   );
+  // }
 
   function PostStackScreen() {
     return (
@@ -185,7 +185,24 @@ const TabNavigation = props => {
     );
   }
 
-  function MyTabs() {
+  const stacks = () => {
+    return (
+      <Stack.Navigator headerMode='none'>
+        <Stack.Screen
+          name='Main'
+          component={MyTabs}
+        />
+        <Stack.Screen
+          name='ChatRoom'
+          component={ChatRoom}
+        />
+        <Stack.Screen name="NewChat" component={NewChat} />
+        <Stack.Screen name="UserDetailsPage" component={UserDetailsPage} />
+      </Stack.Navigator>
+    )
+  }
+
+  const MyTabs = () => {
     return (
       <Tab.Navigator
         initialRouteName="Home"
@@ -233,7 +250,7 @@ const TabNavigation = props => {
         />
         <Tab.Screen
           name="Chat"
-          component={ChatStackScreen}
+          component={Chat}
           options={{
             tabBarLabel: 'Chat',
             tabBarIcon: ({ color }) => (
@@ -263,7 +280,7 @@ const TabNavigation = props => {
     );
   }
 
-  return <NavigationContainer>{MyTabs()}</NavigationContainer>;
+  return <NavigationContainer>{stacks()}</NavigationContainer>;
 };
 
 export default withTheme(TabNavigation);

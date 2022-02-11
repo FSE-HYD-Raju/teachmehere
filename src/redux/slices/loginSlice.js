@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
-import { authLoginUrl } from '../urls';
+import { authLoginUrl, logoutUrl } from '../urls';
 import {
   storeAsyncData,
   clearAsyncData,
 } from '../../components/common/asyncStorage';
+import { clearData } from '../slices/chatSlice'
 
 export const initialState = {
   profileLoading: false,
@@ -153,7 +154,13 @@ export function logOutUser(param) {
         }),
       );
       clearAsyncData();
+      // chatlist = getState().chat.unsubscribeSnapshot
+      // chatlist && chatlist()
+      dispatch(clearData())
       dispatch(logoutSuccess());
+      axios.post(logoutUrl, {
+        _id: param.uid
+      });
     }, 50);
   };
 }
