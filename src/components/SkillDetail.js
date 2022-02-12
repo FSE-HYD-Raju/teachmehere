@@ -221,21 +221,7 @@ export default function SkillDetail({ route, navigation }) {
           }
           style={styles.imgStyle}
         />
-        <View style={styles.header}>
-          <Icons
-            name={'keyboard-backspace'}
-            size={27}
-            color={'black'}
-            style={{ fontWeight: 'bold' }}
-            onPress={() => navigation.goBack()}
-          />
-          <MaterialCommunityIcons
-            name="share-variant"
-            size={26}
-            color={'black'}
-            onPress={() => onShare()}
-          />
-        </View>
+
       </View>
     );
   };
@@ -302,6 +288,21 @@ export default function SkillDetail({ route, navigation }) {
       requestedObj.request_status == 'ACCEPTED';
     return (
       <View>
+        <View style={styles.header}>
+          <Icons
+            name={'keyboard-backspace'}
+            size={27}
+            color={'black'}
+            style={{ fontWeight: 'bold' }}
+            onPress={() => navigation.goBack()}
+          />
+          <MaterialCommunityIcons
+            name="share-variant"
+            size={26}
+            color={'black'}
+            onPress={() => onShare()}
+          />
+        </View>
         <View style={{ alignItems: 'center' }}>
           <Avatar.Image
             size={130}

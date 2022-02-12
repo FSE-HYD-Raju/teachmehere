@@ -77,6 +77,12 @@ export default function ChatRoom({ route, navigation }) {
         displaypic: senderInfo.displaypic,
       });
     }
+    if (
+      chatResults &&
+      chatResults.length
+    ) {
+      listenForThread()
+    }
   }, [chatResults]);
 
   useEffect(() => {
@@ -105,14 +111,15 @@ export default function ChatRoom({ route, navigation }) {
       backhandler = backButtonHandler();
     }
     if (!messagesListener) messagesListener = getMessages();
-    if (!threadListener) threadListener = listenForThread();
+    // if (!threadListener) threadListener = listenForThread();
 
     // dispatch(setLoading(false));
     // Stop listening for updates whenever the component unmounts
     return () => {
+      console.log('unmounting');
       backhandler.remove();
       messagesListener();
-      threadListener();
+      // threadListener();
       // dispatch(setCurrentOpenedChat({}))
     };
   }, [messages]);
@@ -140,12 +147,14 @@ export default function ChatRoom({ route, navigation }) {
   };
 
   const getMessages = () => {
+    console.log('in getMessages');
     return firestore()
       .collection('THREADS')
       .doc(thread._id)
       .collection('MESSAGES')
       .orderBy('serverTime', 'desc')
       .onSnapshot(querySnapshot => {
+        console.log('in getMessages snapshot');
         const messagesArr = [];
         for (var i in querySnapshot.docs) {
           const doc = querySnapshot.docs[i];
@@ -188,29 +197,44 @@ export default function ChatRoom({ route, navigation }) {
   };
 
   const listenForThread = () => {
-    return firestore()
-      .collection('THREADS')
-      .doc(thread._id)
-      .onSnapshot(querySnapshot => {
-        // for (var i in querySnapshot.docs) {
-        const data = querySnapshot.data();
-        console.log('listenforthresads');
+    chatResults.map(data => {
+      // for (var i in querySnapshot.docs) {
+      console.log('listenforthresads');
 
-        console.log(data);
-        // alert(JSON.stringify(data))
-        if (
-          data &&
-          data.blockedIds &&
-          data.blockedIds.length &&
-          data.blockedIds.indexOf(userInfo._id) > -1
-        ) {
-          setGotBlocked(true);
-        } else {
-          setGotBlocked(false);
-        }
-        // }
-      });
+      console.log(data);
+      // alert(JSON.stringify(data))
+      if (
+        data &&
+        data.blockedIds &&
+        data.blockedIds.length &&
+        data.blockedIds.indexOf(userInfo._id) > -1
+      ) {
+        setGotBlocked(true);
+      } else {
+        setGotBlocked(false);
+      }
+      markMessagesRead(data);
+      // }
+    });
   };
+
+  const markMessagesRead = async (data) => {
+    if (data && data.latestMessage && data.latestMessage.senderId !== userInfo._id && data.latestMessage.read == false) {
+      console.log('markMessagesRead');
+
+      var updateObj = {
+        latestMessage: {
+          ...data.latestMessage,
+          read: true
+        },
+      };
+      await firestore()
+        .collection('THREADS')
+        .doc(thread._id)
+        .set(updateObj, { merge: true });
+    };
+  }
+
 
   const handleSend = messages => {
     const text = messages[0].text;
@@ -270,6 +294,8 @@ export default function ChatRoom({ route, navigation }) {
         text: text,
         createdAt: new Date().getTime(),
         serverTime: new Date().getTime(),
+        senderId: userInfo._id,
+        read: false
         // serverTime: firestore.FieldValue.serverTimestamp()
       },
       deletedIds: [], //firestore.FieldValue.arrayRemove(userInfo._id),
@@ -736,7 +762,7 @@ export default function ChatRoom({ route, navigation }) {
               <Icons
                 name={'dots-vertical'} // color="#fff"
                 size={25}
-                style={{ paddingHorizontal: 25 }}
+                style={{ paddingRight: 15 }}
               />
             }
             destructiveIndex={1}

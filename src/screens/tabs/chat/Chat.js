@@ -52,6 +52,10 @@ export default function Chat({ navigation }) {
     )
   }
 
+  var REFERENCE = moment(); // fixed just for testing, use moment();
+  var TODAY = REFERENCE.clone().startOf('day');
+  var YESTERDAY = REFERENCE.clone().subtract(1, 'days').startOf('day');
+
   return (
     <View style={styles.container}>
       <Searchbar
@@ -70,29 +74,92 @@ export default function Chat({ navigation }) {
             data={searchChatResults}
             keyExtractor={item => item._id}
             ItemSeparatorComponent={() => <Divider />}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate('ChatRoom', { thread: item })}
-              >
-                <List.Item
-                  title={item.name}
-                  description={item.didBlock ? "" : item.latestMessage.text}
-                  left={props => <Avatar
-                    rounded
-                    containerStyle={{ margin: 7 }}
-                    size={50}
-                    // source={require('../../../assets/img/default-mask-avatar.png')}
-                    source={item.displaypic ? { uri: item.displaypic } : require('../../../assets/img/default-mask-avatar.png')}
-                  />}
-                  right={props => <Text style={styles.datetime}>{moment(item.latestMessage.createdAt).fromNow()} </Text>}
-                  titleNumberOfLines={1}
-                  titleStyle={styles.listTitle}
-                  descriptionStyle={styles.listDescription}
-                  descriptionNumberOfLines={1}
+            renderItem={({ item }) => {
+              let unreadMsg = item.latestMessage.read == false && item.latestMessage.senderId != userInfo._id;
+              let createdAt = item.latestMessage.createdAt
+              return (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('ChatRoom', { thread: item })}
+                >
+                  <List.Item
+                    title={item.name}
+                    description={item.didBlock ? "" : item.latestMessage.text}
+                    left={props => <Avatar
+                      rounded
+                      containerStyle={{ margin: 7 }}
+                      size={50}
+                      // source={require('../../../assets/img/default-mask-avatar.png')}
+                      source={item.displaypic ? { uri: item.displaypic } : require('../../../assets/img/default-mask-avatar.png')}
+                    />}
+                    right={props => {
+                      return (
+                        <View style={{ flexDirection: 'column' }}>
+                          <View>
+                            <Text style={[styles.datetime, unreadMsg &&
+                            {
+                              color: 'black',
+                              fontWeight: 'bold'
+                            }
+                            ]}>
+                              {
+                                moment(createdAt).isSame(TODAY, 'd') ?
+                                  moment(createdAt).format('hh:mm A') :
+                                  (moment(createdAt).isSame(YESTERDAY, 'd') ?
+                                    moment(createdAt).format('ddd') :
+                                    moment(createdAt).format('MMM D'))
+                              }
 
-                />
-              </TouchableOpacity>
-            )}
+                            </Text>
+                          </View>
+                          {unreadMsg &&
+                            <View style={{
+                              // position: 'absolute',
+                              // width: '100%'
+                              marginTop: 3,
+                              alignItems: 'flex-end'
+                            }}>
+                              <Text style={{
+                                color: 'white',
+                                fontSize: 10,
+                                fontWeight: 'bold',
+                                textAlign: 'center',
+                                textAlignVertical: 'center',
+                                padding: 5,
+                                height: 25,
+                                width: 25,
+                                backgroundColor: '#04b1ba',
+                                borderRadius: 50,
+                                // // right: -5,
+                                // // top: -5,
+                                // justifyContent: 'center',
+                                // alignItems: 'center'
+                              }}>{'1'}</Text>
+                            </View>
+                          }
+                        </View>
+                      )
+                    }
+                    }
+                    titleNumberOfLines={1}
+                    titleStyle={[styles.listTitle, unreadMsg &&
+                    {
+                      color: 'black',
+                      fontWeight: 'bold'
+                    }
+                    ]}
+                    descriptionStyle={[styles.listDescription, unreadMsg &&
+                    {
+                      color: 'black',
+                      fontWeight: 'bold'
+                    }
+                    ]}
+                    descriptionNumberOfLines={1}
+
+                  />
+                </TouchableOpacity>
+              )
+            }
+            }
             refreshControl={
               <RefreshControl
                 refreshing={loading}
@@ -180,7 +247,7 @@ const styles = StyleSheet.create({
     fontSize: 20
   },
   datetime: {
-    marginTop: 20
+    marginTop: 13
   },
   listTitle: {
     fontSize: 20

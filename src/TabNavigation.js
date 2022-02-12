@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, Text, BackHandler, Alert } from 'react-native';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { withTheme } from 'react-native-paper';
@@ -36,6 +37,10 @@ import {
   fetchInitialDataWhenAppLoading,
   fetchPostedSkills,
 } from './redux/slices/homeSlice';
+import {
+  fetchChats,
+  chatSelector
+} from './redux/slices/chatSlice';
 import messaging from '@react-native-firebase/messaging';
 import SkillDetail from './components/SkillDetail';
 import NotificationPage from './screens/tabs/notification/notification';
@@ -51,10 +56,21 @@ const TabNavigation = props => {
   const Stack = createStackNavigator();
   const Tab = createMaterialBottomTabNavigator();
   const { userInfo } = useSelector(loginSelector);
+  // const { hasUnreadMsgs } = useSelector(chatSelector)
+  const [unreadMsg, setUnreadMsg] = useState(false);
 
   useEffect(() => {
     loadInitialData();
   }, []);
+
+  // useEffect(() => {
+  //   chatResults.map(chat => {
+  //     if (chat.latestMessage.read === false) {
+  //       setUnreadMsg(true);
+  //     }
+  //   }
+  //   );
+  // }, [chatResults]);
 
   const loadInitialData = () => {
     getUserInfo();
@@ -72,8 +88,10 @@ const TabNavigation = props => {
     const userData = await getAsyncData('userInfo');
     if (userData) {
       dispatch(loadUserInfo(userData));
-      if (userData?._id)
+      if (userData?._id) {
         dispatch(fetchReqFavpostedCounts({ uid: userData._id }));
+        // dispatch(fetchChats(userData))
+      }
     }
   };
 
@@ -204,6 +222,12 @@ const TabNavigation = props => {
   }
 
   const MyTabs = () => {
+    // chatResults.map(chat => {
+    //   if (chat.latestMessage.read === false) {
+    //     setUnreadMsg(true);
+    //   }
+    // }
+    // );
     return (
       <Tab.Navigator
         initialRouteName="Home"
@@ -255,11 +279,40 @@ const TabNavigation = props => {
           options={{
             tabBarLabel: 'Chat',
             tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons
-                name="message-outline"
-                color={color}
-                size={26}
-              />
+              <>
+                <MaterialCommunityIcons
+                  name="message-outline"
+                  color={color}
+                  size={26}
+                />
+                {/* {true &&
+                  <View style={{
+                    position: 'absolute',
+                    top: -2,
+                    left: 17
+                    // width: '100%'
+                    // marginTop: 3,
+                    // alignItems: 'flex-end'
+                  }}>
+                    <Text style={{
+                      color: 'white',
+                      fontSize: 10,
+                      fontWeight: 'bold',
+                      textAlign: 'center',
+                      textAlignVertical: 'center',
+                      // padding: 5,
+                      height: 12,
+                      width: 12,
+                      backgroundColor: '#04b1ba',
+                      borderRadius: 50,
+                      // // right: -5,
+                      // // top: -5,
+                      // justifyContent: 'center',
+                      // alignItems: 'center'
+                    }}>{''}</Text>
+                  </View>
+                } */}
+              </>
             ),
           }}
         />

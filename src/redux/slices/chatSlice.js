@@ -16,7 +16,8 @@ export const initialState = {
   newChatList: [],
   currentOpenedChat: {},
   getChatsEventCalled: false,
-  unsubscribeSnapshot: null
+  unsubscribeSnapshot: null,
+  hasUnreadMsgs: false
 };
 
 const chatSlice = createSlice({
@@ -62,6 +63,9 @@ const chatSlice = createSlice({
     setUnsubscribeSnapshot: (state, { payload }) => {
       state.unsubscribeSnapshot = payload;
     },
+    setHasUnreadMsgs: (state, { payload }) => {
+      state.hasUnreadMsgs = payload;
+    }
   },
 });
 
@@ -74,7 +78,8 @@ export const {
   setLoading,
   setNewChatList,
   setCurrentOpenedChat,
-  setUnsubscribeSnapshot
+  setUnsubscribeSnapshot,
+  setHasUnreadMsgs
 } = chatSlice.actions;
 
 export const chatSelector = state => state.chat;
@@ -83,7 +88,6 @@ export default chatSlice.reducer;
 export function fetchChats(userInfo) {
   return async (dispatch, getState) => {
     if (getState().chat.getChatsEventCalled) return;
-
     dispatch(getChats());
     try {
       // let unsubscribeSnapshot =
@@ -95,6 +99,7 @@ export function fetchChats(userInfo) {
         .onSnapshot(querySnapshot => {
           var res = [];
           if (querySnapshot) {
+            dispatch(setHasUnreadMsgs(false));
             for (var i in querySnapshot.docs) {
               const documentSnapshot = querySnapshot.docs[i];
               // res = querySnapshot.docs.map(documentSnapshot => {
@@ -125,6 +130,10 @@ export function fetchChats(userInfo) {
                   ...data,
                   didBlock: didBlock,
                 });
+              }
+
+              if (data.latestMessage.read) {
+                dispatch(setHasUnreadMsgs(true));
               }
 
               // });
