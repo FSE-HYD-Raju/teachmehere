@@ -84,6 +84,7 @@ export default function RequestedCoursesPage({ navigation }) {
                 course={item}
                 courseClicked={() => courseClicked(item)}
                 wishlistClicked={() => wishlistClicked(item)}
+                showDelete={true}
               />
             )}
             refreshControl={
@@ -92,6 +93,9 @@ export default function RequestedCoursesPage({ navigation }) {
                 onRefresh={() => getRequetedCourses(userInfo._id)}
               />
             }
+            style={{
+              marginBottom: 30
+            }}
           />
         </View>
       </TouchableWithoutFeedback>
@@ -161,8 +165,8 @@ export default function RequestedCoursesPage({ navigation }) {
       {loading
         ? loadingComponent()
         : requestedSkills.length
-        ? cardListComponent()
-        : noDataFoundComponent()}
+          ? cardListComponent()
+          : noDataFoundComponent()}
     </View>
   );
 }

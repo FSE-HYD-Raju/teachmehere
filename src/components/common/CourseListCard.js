@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,16 +6,27 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
+  Alert
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { Card, Avatar, Badge, Icon, Rating } from 'react-native-elements';
 import Price from '../common/Price';
 import moment from 'moment';
+import IconMaterialIcons from 'react-native-vector-icons/FontAwesome';
+import PageSpinner from './PageSpinner';
+import { setReqFavPostedCount, setReqCount } from '../../redux/slices/loginSlice';
+import {
+  setRequestedSkills,
+} from '../../redux/slices/profileSlice';
+
+
 
 export default function CourseListCard({
   course,
   courseClicked,
   wishlistClicked,
   cardWidth,
+  showDelete = false
 }) {
   const userProfilePic =
     course && course.displaypic
@@ -24,55 +35,140 @@ export default function CourseListCard({
       }
       : // { uri: "https://bootdey.com/img/Content/avatar/avatar7.png" }
       require('../../assets/img/default-mask-avatar.png');
+
+  const [loading, setLoading] = React.useState(false);
+  const dispatch = useDispatch();
+
+
+  const deleteSkillAlert = () =>
+    Alert.alert(
+      '',
+      'Remove this skill from Requested Skills?',
+      [
+        {
+          text: 'No',
+          onPress: () => console.log('No Pressed'),
+          style: 'cancel',
+        },
+        { text: 'Yes', onPress: () => deleteSkill() },
+      ],
+      { cancelable: false },
+    );
+
+
+  const deleteSkill = () => {
+    setLoading(true);
+    fetch('https://teachmeproject.herokuapp.com/removeFromRequestedCourses', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        uid: course.request_uid,
+        courseid: course._id
+      }),
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log(responseJson.length);
+        if (responseJson)
+          dispatch(setRequestedSkills(responseJson));
+        dispatch(setReqCount(responseJson.length))
+        setLoading(false);
+      })
+      .catch(error => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
+
+
   return (
-    <TouchableOpacity onPress={courseClicked}>
-      <View style={styles.card}>
-        <View style={styles.userDetails}>
-          <Image style={styles.userImage} source={userProfilePic} />
-          <Text style={{ ...styles.textStyle, alignSelf: 'center' }}>
-            {course.username}
-          </Text>
-          <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
-            <Rating
-              type="star"
-              imageSize={15}
-              startingValue={course.avgrating}
-              readonly
-              style={{ marginTop: 5, marginBottom: 5 }}
-            />
-            <Text style={styles.usersRated}>({course.usersrated})</Text>
-          </View>
-          <View style={{ alignItems: 'center' }}>
-            <Text style={{ fontSize: 10 }}>
-              {moment
-                .utc(course.updateddate)
-                .local()
-                .fromNow()}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.courseDetails}>
-          <View>
-            <Text style={styles.courseName} numberOfLines={2}>
-              {course.coursename}
-            </Text>
-            {!!course && !!course.courselevel && (
-              <Text style={[styles.textStyle, { width: 135, fontSize: 13 }]}>
-                Level - {course.courselevel}
-              </Text>
+    <>
+      <TouchableOpacity onPress={courseClicked}>
+        <View style={styles.card}>
+          <View style={{
+            position: 'absolute',
+            justifyContent: 'flex-end',
+            alignItems: 'flex-end',
+            width: '100%',
+            zIndex: 9
+            // padding: 15,
+            // paddingRight: 10,
+            // marginVertical: 0,
+            // marginRight: 30,
+          }}>
+            {showDelete && (
+              <TouchableOpacity
+                onPress={deleteSkillAlert}
+                style={{
+                  // backgroundColor: 'red',
+                  alignItems: 'center',
+                  padding: 15,
+                  // paddingHorizontal: 10,
+                  // justifyContent: 'flex-end',
+                  // backgroundColor: 'red',
+                  // width: 50
+                }}>
+                <IconMaterialIcons
+                  name={'trash-o'}
+                  color="black"
+                  size={20}
+                  style={{ height: 20 }}
+                />
+              </TouchableOpacity>
             )}
-            <View style={{ marginTop: 10, width: 110 }}>
-              <Price price={course.price} currency={course.currency} />
+          </View>
+          <View style={styles.userDetails}>
+            <Image style={styles.userImage} source={userProfilePic} />
+            <Text style={{ ...styles.textStyle, alignSelf: 'center' }}>
+              {course.username}
+            </Text>
+            <View style={{ flexDirection: 'row', alignSelf: 'center' }}>
+              <Rating
+                type="star"
+                imageSize={15}
+                startingValue={course.avgrating}
+                readonly
+                style={{ marginTop: 5, marginBottom: 5 }}
+              />
+              <Text style={styles.usersRated}>({course.usersrated})</Text>
             </View>
-            <View style={styles.platform}>
-              <Text style={styles.platformText}>
-                {course.totalhours} Hours Skill
+            <View style={{ alignItems: 'center' }}>
+              <Text style={{ fontSize: 10 }}>
+                {moment
+                  .utc(course.updateddate)
+                  .local()
+                  .fromNow()}
               </Text>
             </View>
           </View>
+          <View style={styles.courseDetails}>
+            <View>
+              <Text style={styles.courseName} numberOfLines={2}>
+                {course.coursename}
+              </Text>
+              {!!course && !!course.courselevel && (
+                <Text style={[styles.textStyle, { width: 135, fontSize: 13 }]}>
+                  Level - {course.courselevel}
+                </Text>
+              )}
+              <View style={{ marginTop: 10, width: 110 }}>
+                <Price price={course.price} currency={course.currency} />
+              </View>
+              <View style={styles.platform}>
+                <Text style={styles.platformText}>
+                  {course.totalhours} Hours Skill
+                </Text>
+              </View>
+            </View>
+          </View>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+      <PageSpinner visible={loading} />
+    </>
+
   );
 }
 

@@ -81,6 +81,9 @@ const loginSlice = createSlice({
     setReqFavPostedCount: (state, { payload }) => {
       state.reqFavPostedCount = payload;
     },
+    setReqCount: (state, { payload }) => {
+      state.reqFavPostedCount.requestedcoursescount = payload;
+    },
   },
 });
 
@@ -98,6 +101,7 @@ export const {
   setReqFavPostedCount,
   logoutStarted,
   logoutDone,
+  setReqCount,
 } = loginSlice.actions;
 
 export const loginSelector = state => state.login;

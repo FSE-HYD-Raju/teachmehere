@@ -136,7 +136,6 @@ export default function ChangeProfilePage({ navigation }) {
     return (
       <View>
         <Input
-          multiline
           style={{ paddingLeft: 20 }}
           placeholder={props.placeholder}
           leftIcon={props.leftIcon}
@@ -214,7 +213,7 @@ export default function ChangeProfilePage({ navigation }) {
                 errorMessage={oldPasswordError}
                 value={values.Oldpassword}
                 touched={touched.Oldpassword}
-                errors={errors.Oldpassword}
+                // errors={errors.Oldpassword}
                 handleChange={handleChange}
                 setFieldTouched={setFieldTouched}
                 rightIcon={

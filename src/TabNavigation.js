@@ -196,6 +196,7 @@ const TabNavigation = props => {
           name='ChatRoom'
           component={ChatRoom}
         />
+        <Stack.Screen name="ChatPage" component={Chat} />
         <Stack.Screen name="NewChat" component={NewChat} />
         <Stack.Screen name="UserDetailsPage" component={UserDetailsPage} />
       </Stack.Navigator>

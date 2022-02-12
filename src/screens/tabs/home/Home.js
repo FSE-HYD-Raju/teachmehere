@@ -104,7 +104,11 @@ export default function Home(props) {
           //   thread: JSON.parse(focusNotiMsg.data.data),
           // });
           focusNotiMsg.data.data.fromNotification = true
-          props.navigation.navigate('Chat', { screen: 'ChatRoom', params: { thread: JSON.parse(focusNotiMsg.data.data) } })
+          // props.navigation.navigate('Chat', { screen: 'ChatRoom', params: { thread: JSON.parse(focusNotiMsg.data.data) } })
+
+          props.navigation.navigate('Chat')
+
+          props.navigation.navigate('ChatRoom', { thread: JSON.parse(focusNotiMsg.data.data) })
 
         } else if (
           notification &&
@@ -112,7 +116,12 @@ export default function Home(props) {
           notification.data.type == 'CHAT'
         ) {
           notification.data.fromNotification = true
-          props.navigation.navigate('Chat', { screen: 'ChatRoom', params: { thread: notification.data } })
+          // props.navigation.navigate('Chat', { screen: 'ChatRoom', params: { thread: notification.data } })
+
+          props.navigation.navigate('Chat')
+
+          props.navigation.navigate('ChatRoom', { thread: notification.data })
+
           // props.navigation.push('ChatRoom', { thread: notification.data });
           // props.navigation.reset({
           //   index: 1,

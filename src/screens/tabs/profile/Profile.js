@@ -96,15 +96,15 @@ export default function Profile({ route, navigation }) {
 
   const settingsIconContainer = () => {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('ProfileSettings')}>
-        <View style={styles.settingsIconContainer}>
+      <View style={styles.settingsIconContainer}>
+        <TouchableOpacity onPress={() => navigation.navigate('ProfileSettings')} >
           <IconMaterialIcons
             name={'settings'}
             color="rgb(102, 94, 94)"
             size={25}
           />
-        </View>
-      </TouchableOpacity>
+        </TouchableOpacity>
+      </View>
     );
   };
 
@@ -248,7 +248,7 @@ export default function Profile({ route, navigation }) {
             onPress={() => navigation.navigate('RequestedCourses')}>
             <Surface style={styles.surfaceReq}>
               <Text style={styles.statValue}>
-                {requestedSkills ? requestedSkills.length : reqFavPostedCount.requestedcoursescount}
+                {!!requestedSkills && requestedSkills.length ? requestedSkills.length : reqFavPostedCount.requestedcoursescount}
               </Text>
               <Text style={styles.statText}>Requested {'\n'}Skills</Text>
             </Surface>

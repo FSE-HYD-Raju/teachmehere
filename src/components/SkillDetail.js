@@ -45,6 +45,7 @@ export default function SkillDetail({ route, navigation }) {
   const [loading, setLoading] = React.useState(false);
   const [requestedObj, setRequestedObj] = React.useState(null);
   const [areConnected, setAreConnected] = React.useState(false);
+  const [requestSent, setRequestSent] = React.useState(false);
   const [userRating, setCurrentRating] = useState(0);
   const [ratingLoading, setRatingLoading] = useState(true);
   const [deleteLoading, setDeleteLoading] = useState(false);
@@ -81,6 +82,7 @@ export default function SkillDetail({ route, navigation }) {
   const getRequetedCourses = uid => {
     setLoading(true);
     setAreConnected(false)
+    setRequestSent(false)
     fetch('https://teachmeproject.herokuapp.com/requestedCoursesByid', {
       method: 'POST',
       headers: {
@@ -97,7 +99,18 @@ export default function SkillDetail({ route, navigation }) {
           dispatch(setRequestedSkills(responseJson));
         }
         let reqObj = responseJson.filter(obj => obj._id == skill._id);
-        let connectedOj = responseJson.filter(obj => obj.courseuid == skill.uid && obj.request_status === "ACCEPTED");
+
+        let connectedOj = responseJson.filter(obj => {
+          console.log(obj.request_uid)
+          return (((obj.courseuid == skill.uid && obj.request_uid == userInfo._id) || (obj.courseuid == userInfo._id && obj.request_uid == skill.uid)) && obj.request_status === "ACCEPTED")
+        })
+        let requestSentObj = responseJson.filter(obj => {
+          console.log(obj.request_uid)
+          return (((obj.courseuid == skill.uid && obj.request_uid == userInfo._id) || (obj.courseuid == userInfo._id && obj.request_uid == skill.uid)))
+        })
+        if (requestSentObj.length) {
+          setRequestSent(true)
+        }
         if (connectedOj.length) {
           setAreConnected(true)
         }
@@ -572,7 +585,7 @@ export default function SkillDetail({ route, navigation }) {
         .then(response => response.json())
         .then(responseJson => {
           getRequetedCourses(userInfo._id);
-          if (!areConnected) {
+          if (!requestSent) {
             addFirebaseNotification(skill);
           }
         })

@@ -272,15 +272,15 @@ export default function ChatRoom({ route, navigation }) {
         serverTime: new Date().getTime(),
         // serverTime: firestore.FieldValue.serverTimestamp()
       },
-      deletedIds: firestore.FieldValue.arrayRemove(userInfo._id),
+      deletedIds: [], //firestore.FieldValue.arrayRemove(userInfo._id),
       newChat: false,
       support: !!thread.support,
       // displaypic: userInfo.displaypic
     };
 
-    if (newChat) {
-      updateObj.deletedIds = firestore.FieldValue.arrayRemove(senderObj.id);
-    }
+    // if (newChat) {
+    //   updateObj.deletedIds = firestore.FieldValue.arrayRemove(senderObj.id);
+    // }
 
     console.log('msgObj', JSON.stringify(msgObj));
     console.log('updateObj', JSON.stringify(updateObj));
@@ -705,8 +705,8 @@ export default function ChatRoom({ route, navigation }) {
           style={{
             // alignItems: "center",
             // justifyContent: "center",
-            flex: 0.9,
-
+            flex: 0.8,
+            // width: '70%',
             // flexDirection: "row",
             marginLeft: 20,
             // justifyContent: ""
@@ -730,26 +730,28 @@ export default function ChatRoom({ route, navigation }) {
             </View>
           </TouchableOpacity>
         </View>
-        <OptionsMenu
-          customButton={
-            <Icons
-              name={'dots-vertical'} // color="#fff"
-              size={25}
-            // style={{ paddingRight: 5 }}
-            />
-          }
-          destructiveIndex={1}
-          options={
-            !thread.support
-              ? ['Delete Chat', didBlock ? 'Unblock' : 'Block']
-              : ['Delete Chat']
-          }
-          actions={
-            !thread.support
-              ? [deleteChat, didBlock ? unblockUser : blockUser]
-              : [deleteChat]
-          }
-        />
+        <View style={{ flex: 0.2, alignItems: 'flex-end' }}>
+          <OptionsMenu
+            customButton={
+              <Icons
+                name={'dots-vertical'} // color="#fff"
+                size={25}
+                style={{ paddingHorizontal: 25 }}
+              />
+            }
+            destructiveIndex={1}
+            options={
+              !thread.support
+                ? ['Delete Chat', didBlock ? 'Unblock' : 'Block']
+                : ['Delete Chat']
+            }
+            actions={
+              !thread.support
+                ? [deleteChat, didBlock ? unblockUser : blockUser]
+                : [deleteChat]
+            }
+          />
+        </View>
         {/* <Icons
                     name={"camera"}
                     // color="#fff"
