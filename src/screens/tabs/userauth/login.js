@@ -67,6 +67,7 @@ export default function LoginPage({ navigation }) {
             if (isPostQueryActive) {
               navigation.navigate('PostPage');
             } else {
+              console.log('suchiiiiii');
               navigation.reset({
                 index: 0,
                 routes: [{ name: 'Profile' }],

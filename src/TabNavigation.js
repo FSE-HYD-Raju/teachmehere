@@ -37,10 +37,7 @@ import {
   fetchInitialDataWhenAppLoading,
   fetchPostedSkills,
 } from './redux/slices/homeSlice';
-import {
-  fetchChats,
-  chatSelector
-} from './redux/slices/chatSlice';
+import { fetchChats, chatSelector } from './redux/slices/chatSlice';
 import messaging from '@react-native-firebase/messaging';
 import SkillDetail from './components/SkillDetail';
 import NotificationPage from './screens/tabs/notification/notification';
@@ -205,21 +202,15 @@ const TabNavigation = props => {
 
   const stacks = () => {
     return (
-      <Stack.Navigator headerMode='none'>
-        <Stack.Screen
-          name='Main'
-          component={MyTabs}
-        />
-        <Stack.Screen
-          name='ChatRoom'
-          component={ChatRoom}
-        />
+      <Stack.Navigator headerMode="none">
+        <Stack.Screen name="Main" component={MyTabs} />
+        <Stack.Screen name="ChatRoom" component={ChatRoom} />
         <Stack.Screen name="ChatPage" component={Chat} />
         <Stack.Screen name="NewChat" component={NewChat} />
         <Stack.Screen name="UserDetailsPage" component={UserDetailsPage} />
       </Stack.Navigator>
-    )
-  }
+    );
+  };
 
   const MyTabs = () => {
     // chatResults.map(chat => {
@@ -332,7 +323,7 @@ const TabNavigation = props => {
         />
       </Tab.Navigator>
     );
-  }
+  };
 
   return <NavigationContainer>{stacks()}</NavigationContainer>;
 };
