@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, BackHandler, Alert } from 'react-native';
+import React, { useEffect } from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { withTheme } from 'react-native-paper';
@@ -37,7 +36,6 @@ import {
   fetchInitialDataWhenAppLoading,
   fetchPostedSkills,
 } from './redux/slices/homeSlice';
-import { fetchChats, chatSelector } from './redux/slices/chatSlice';
 import messaging from '@react-native-firebase/messaging';
 import SkillDetail from './components/SkillDetail';
 import NotificationPage from './screens/tabs/notification/notification';
@@ -53,21 +51,10 @@ const TabNavigation = props => {
   const Stack = createStackNavigator();
   const Tab = createMaterialBottomTabNavigator();
   const { userInfo } = useSelector(loginSelector);
-  // const { hasUnreadMsgs } = useSelector(chatSelector)
-  const [unreadMsg, setUnreadMsg] = useState(false);
 
   useEffect(() => {
     loadInitialData();
   }, []);
-
-  // useEffect(() => {
-  //   chatResults.map(chat => {
-  //     if (chat.latestMessage.read === false) {
-  //       setUnreadMsg(true);
-  //     }
-  //   }
-  //   );
-  // }, [chatResults]);
 
   const loadInitialData = () => {
     getUserInfo();
@@ -85,10 +72,8 @@ const TabNavigation = props => {
     const userData = await getAsyncData('userInfo');
     if (userData) {
       dispatch(loadUserInfo(userData));
-      if (userData?._id) {
+      if (userData?._id)
         dispatch(fetchReqFavpostedCounts({ uid: userData._id }));
-        // dispatch(fetchChats(userData))
-      }
     }
   };
 
@@ -169,16 +154,16 @@ const TabNavigation = props => {
     );
   }
 
-  // function ChatStackScreen({ navigation }) {
-  //   return (
-  //     <Stack1.Navigator headerMode={'none'} initialRouteName={'ChatPage'} >
-  //       <Stack1.Screen name="ChatPage" component={Chat} />
-  //       <Stack1.Screen name="ChatRoom" component={ChatRoom} />
-  //       <Stack1.Screen name="NewChat" component={NewChat} />
-  //       <Stack1.Screen name="UserDetailsPage" component={UserDetailsPage} />
-  //     </Stack1.Navigator>
-  //   );
-  // }
+  function ChatStackScreen() {
+    return (
+      <Stack.Navigator headerMode={'none'} initialRouteName={'ChatPage'}>
+        <Stack.Screen name="ChatPage" component={Chat} />
+        <Stack.Screen name="ChatRoom" component={ChatRoom} />
+        <Stack.Screen name="NewChat" component={NewChat} />
+        <Stack.Screen name="UserDetailsPage" component={UserDetailsPage} />
+      </Stack.Navigator>
+    );
+  }
 
   function PostStackScreen() {
     return (
@@ -200,25 +185,7 @@ const TabNavigation = props => {
     );
   }
 
-  const stacks = () => {
-    return (
-      <Stack.Navigator headerMode="none">
-        <Stack.Screen name="Main" component={MyTabs} />
-        <Stack.Screen name="ChatRoom" component={ChatRoom} />
-        <Stack.Screen name="ChatPage" component={Chat} />
-        <Stack.Screen name="NewChat" component={NewChat} />
-        <Stack.Screen name="UserDetailsPage" component={UserDetailsPage} />
-      </Stack.Navigator>
-    );
-  };
-
-  const MyTabs = () => {
-    // chatResults.map(chat => {
-    //   if (chat.latestMessage.read === false) {
-    //     setUnreadMsg(true);
-    //   }
-    // }
-    // );
+  function MyTabs() {
     return (
       <Tab.Navigator
         initialRouteName="Home"
@@ -266,44 +233,15 @@ const TabNavigation = props => {
         />
         <Tab.Screen
           name="Chat"
-          component={Chat}
+          component={ChatStackScreen}
           options={{
             tabBarLabel: 'Chat',
             tabBarIcon: ({ color }) => (
-              <>
-                <MaterialCommunityIcons
-                  name="message-outline"
-                  color={color}
-                  size={26}
-                />
-                {/* {true &&
-                  <View style={{
-                    position: 'absolute',
-                    top: -2,
-                    left: 17
-                    // width: '100%'
-                    // marginTop: 3,
-                    // alignItems: 'flex-end'
-                  }}>
-                    <Text style={{
-                      color: 'white',
-                      fontSize: 10,
-                      fontWeight: 'bold',
-                      textAlign: 'center',
-                      textAlignVertical: 'center',
-                      // padding: 5,
-                      height: 12,
-                      width: 12,
-                      backgroundColor: '#04b1ba',
-                      borderRadius: 50,
-                      // // right: -5,
-                      // // top: -5,
-                      // justifyContent: 'center',
-                      // alignItems: 'center'
-                    }}>{''}</Text>
-                  </View>
-                } */}
-              </>
+              <MaterialCommunityIcons
+                name="message-outline"
+                color={color}
+                size={26}
+              />
             ),
           }}
         />
@@ -325,7 +263,7 @@ const TabNavigation = props => {
     );
   };
 
-  return <NavigationContainer>{stacks()}</NavigationContainer>;
+  return <NavigationContainer>{MyTabs()}</NavigationContainer>;
 };
 
 export default withTheme(TabNavigation);

@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
   MainContainer: {
     flex: 1,
     backgroundColor: 'rgb(255, 255, 255)',
-    padding: 30,
+    // padding: 30,
   },
   loginButton: {
     alignSelf: 'center',

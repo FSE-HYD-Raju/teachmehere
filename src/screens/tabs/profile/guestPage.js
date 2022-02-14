@@ -14,7 +14,7 @@ import IconMaterialIcons from 'react-native-vector-icons/Feather';
 export default function GuestPage({ navigation }) {
   const settingsIconContainer = () => {
     return (
-      <View style={{ alignItems: 'flex-end', width: '100%' }}>
+      <View style={{ width: '100%', alignItems: 'flex-end' }}>
         <TouchableOpacity
           onPress={() => navigation.navigate('ProfileSettings')}
           style={styles.settingsIconContainer}>
@@ -25,6 +25,8 @@ export default function GuestPage({ navigation }) {
           />
         </TouchableOpacity>
       </View>
+
+
     );
   };
 
@@ -104,7 +106,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginTop: 35,
     marginRight: 30,
-    elevation: 10,
+    padding: 10
   },
   text: {
     color: 'gray',
@@ -128,7 +130,7 @@ const styles = StyleSheet.create({
   backgroundImage: {
     width: 360,
     height: 275,
-    marginTop: -20,
+    // marginTop: -20,
     // flex: 1,
     // width: win.width,
     // height: 3000 * ratio, //362 is actual height of image

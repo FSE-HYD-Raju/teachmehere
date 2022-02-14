@@ -184,33 +184,6 @@ export default function SkillDetail({ route, navigation }) {
       cat => cat.category == skill.category,
     );
 
-    const onShare = async () => {
-      try {
-        const result = await Share.share({
-          title: 'Skill On',
-          message:
-            'Found a good course about ' +
-            skill.coursename +
-            ' for just ' +
-            skill.currency +
-            skill.price.oneonone +
-            ' in SkillOn App, Check it out! AppLink :https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
-          url: 'https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
-        });
-        if (result.action === Share.sharedAction) {
-          if (result.activityType) {
-            // shared with activity type of result.activityType
-          } else {
-            // shared
-          }
-        } else if (result.action === Share.dismissedAction) {
-          // dismissed
-        }
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-
     return (
       <View>
         <Image
@@ -286,6 +259,35 @@ export default function SkillDetail({ route, navigation }) {
       userInfo._id !== skill.uid &&
       !!requestedObj &&
       requestedObj.request_status == 'ACCEPTED';
+
+
+    const onShare = async () => {
+      try {
+        const result = await Share.share({
+          title: 'Skill On',
+          message:
+            'Found a good course about ' +
+            skill.coursename +
+            ' for just ' +
+            skill.currency +
+            skill.price.oneonone +
+            ' in SkillOn App, Check it out! AppLink :https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
+          url: 'https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
+        });
+        if (result.action === Share.sharedAction) {
+          if (result.activityType) {
+            // shared with activity type of result.activityType
+          } else {
+            // shared
+          }
+        } else if (result.action === Share.dismissedAction) {
+          // dismissed
+        }
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
     return (
       <View>
         <View style={styles.header}>

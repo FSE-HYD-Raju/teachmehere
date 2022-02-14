@@ -213,7 +213,7 @@ export default function ChatRoom({ route, navigation }) {
       } else {
         setGotBlocked(false);
       }
-      markMessagesRead(data);
+      // markMessagesRead(data);
       // }
     });
   };

@@ -187,7 +187,12 @@ const Step1 = props => {
                     mode="contained"
                     color={'black'}
                     labelStyle={styles.btnLabelStyle}
-                    onPress={formProps.handleSubmit}>
+                    onPress={() => {
+                      if (content) {
+                        addContent()
+                      }
+                      formProps.handleSubmit()
+                    }}>
                     Next
                   </Button>
                 </TouchableOpacity>

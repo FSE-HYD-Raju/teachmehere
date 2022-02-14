@@ -75,7 +75,7 @@ export default function Chat({ navigation }) {
             keyExtractor={item => item._id}
             ItemSeparatorComponent={() => <Divider />}
             renderItem={({ item }) => {
-              let unreadMsg = item.latestMessage.read == false && item.latestMessage.senderId != userInfo._id;
+              let unreadMsg = false //item.latestMessage.read == false && item.latestMessage.senderId != userInfo._id;
               let createdAt = item.latestMessage.createdAt
               return (
                 <TouchableOpacity

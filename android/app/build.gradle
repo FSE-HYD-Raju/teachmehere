@@ -131,10 +131,10 @@ android {
 
     defaultConfig {
         applicationId "com.teachmehere"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        minSdkVersion 21
+        targetSdkVersion 30
+        versionCode 10200
+        versionName "1.2.0"
         multiDexEnabled true
     }
     splits {
