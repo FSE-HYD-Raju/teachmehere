@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { withTheme } from 'react-native-paper';
@@ -44,6 +44,7 @@ import signupOtpPage from './screens/tabs/userauth/signupOtp';
 import signupDescPage from './screens/tabs/userauth/signupDesc';
 import feedbackPage from './screens/tabs/profile/feedbackPage';
 import UserDetailsPage from './screens/tabs/profile/userDetailsPage';
+import { Alert, Linking } from 'react-native';
 
 const TabNavigation = props => {
   const dispatch = useDispatch();
@@ -51,10 +52,17 @@ const TabNavigation = props => {
   const Stack = createStackNavigator();
   const Tab = createMaterialBottomTabNavigator();
   const { userInfo } = useSelector(loginSelector);
+  const [versionUpdate, setVersionUpdate] = useState(null);
 
   useEffect(() => {
-    loadInitialData();
+    checkVersion('0.1');
   }, []);
+
+  useEffect(() => {
+    if (versionUpdate === true) {
+      loadInitialData();
+    }
+  }, [versionUpdate]);
 
   const loadInitialData = () => {
     getUserInfo();
@@ -185,83 +193,132 @@ const TabNavigation = props => {
     );
   }
 
-  function MyTabs() {
-    return (
-      <Tab.Navigator
-        initialRouteName="Home"
-        activeColor={'black'}
-        inactiveColor="grey"
-        barStyle={{ backgroundColor: colors.primary }}
-        sceneAnimationEnabled={false}>
-        <Tab.Screen
-          name="Home"
-          component={HomeStackScreen}
-          options={{
-            tabBarLabel: 'Home',
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons
-                name="home-outline"
-                color={color}
-                size={26}
-              />
+  const checkVersion = async verison => {
+    await fetch('https://teachmeproject.herokuapp.com/checkVersion', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        version: verison,
+      }),
+    })
+      .then(response => response.json())
+      .then(responseJson => {
+        console.log('tag', responseJson);
+        setVersionUpdate(responseJson['status']);
+      })
+      .catch(error => {
+        console.error(error);
+        setVersionUpdate(true);
+        // setLoading(false);
+      });
+  };
+
+  const versionUpdateAlert = () => {
+    Alert.alert(
+      'New version available',
+      'Please update your app to latest version',
+      [
+        {
+          text: 'Update',
+          onPress: () =>
+            Linking.openURL(
+              'https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
             ),
-          }}
-        />
-        <Tab.Screen
-          name="Search"
-          component={SearchStackScreen}
-          options={{
-            tabBarLabel: 'Search',
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons name="magnify" color={color} size={26} />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Post"
-          component={PostStackScreen}
-          options={{
-            tabBarLabel: 'Post',
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons
-                name="plus-circle-outline"
-                color={color}
-                size={26}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Chat"
-          component={ChatStackScreen}
-          options={{
-            tabBarLabel: 'Chat',
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons
-                name="message-outline"
-                color={color}
-                size={26}
-              />
-            ),
-          }}
-        />
-        <Tab.Screen
-          name="Profile"
-          component={ProfileStackScreen}
-          options={{
-            tabBarLabel: 'Profile',
-            tabBarIcon: ({ color }) => (
-              <MaterialCommunityIcons
-                name="account-outline"
-                color={color}
-                size={26}
-              />
-            ),
-          }}
-        />
-      </Tab.Navigator>
+        },
+      ],
+      { cancelable: false },
     );
   };
+
+  function MyTabs() {
+    if (versionUpdate === false) {
+      versionUpdateAlert();
+      return;
+    } else if (versionUpdate === true) {
+      return (
+        <Tab.Navigator
+          initialRouteName="Home"
+          activeColor={'black'}
+          inactiveColor="grey"
+          barStyle={{ backgroundColor: colors.primary }}
+          sceneAnimationEnabled={false}>
+          <Tab.Screen
+            name="Home"
+            component={HomeStackScreen}
+            options={{
+              tabBarLabel: 'Home',
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons
+                  name="home-outline"
+                  color={color}
+                  size={26}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Search"
+            component={SearchStackScreen}
+            options={{
+              tabBarLabel: 'Search',
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons
+                  name="magnify"
+                  color={color}
+                  size={26}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Post"
+            component={PostStackScreen}
+            options={{
+              tabBarLabel: 'Post',
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons
+                  name="plus-circle-outline"
+                  color={color}
+                  size={26}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Chat"
+            component={ChatStackScreen}
+            options={{
+              tabBarLabel: 'Chat',
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons
+                  name="message-outline"
+                  color={color}
+                  size={26}
+                />
+              ),
+            }}
+          />
+          <Tab.Screen
+            name="Profile"
+            component={ProfileStackScreen}
+            options={{
+              tabBarLabel: 'Profile',
+              tabBarIcon: ({ color }) => (
+                <MaterialCommunityIcons
+                  name="account-outline"
+                  color={color}
+                  size={26}
+                />
+              ),
+            }}
+          />
+        </Tab.Navigator>
+      );
+    } else return <></>;
+  }
 
   return <NavigationContainer>{MyTabs()}</NavigationContainer>;
 };
