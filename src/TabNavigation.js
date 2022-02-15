@@ -55,7 +55,7 @@ const TabNavigation = props => {
   const [versionUpdate, setVersionUpdate] = useState(null);
 
   useEffect(() => {
-    checkVersion('0.1');
+    checkVersion('0.0.1');
   }, []);
 
   useEffect(() => {
