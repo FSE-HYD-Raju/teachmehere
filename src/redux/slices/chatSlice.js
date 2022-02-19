@@ -11,13 +11,13 @@ import firestore from '@react-native-firebase/firestore';
 export const initialState = {
   chatResults: [],
   searchChatResults: [],
-  loading: false,
+  loading: true,
   hasErrors: false,
   newChatList: [],
   currentOpenedChat: {},
   getChatsEventCalled: false,
   unsubscribeSnapshot: null,
-  hasUnreadMsgs: false
+  hasUnreadMsgs: false,
 };
 
 const chatSlice = createSlice({
@@ -29,6 +29,9 @@ const chatSlice = createSlice({
       state.chatResults = [];
       state.searchChatResults = [];
       state.getChatsEventCalled = true;
+    },
+    clearLoading: state => {
+      state.loading = false;
     },
     getChatsSuccess: (state, { payload }) => {
       state.chatResults = payload;
@@ -46,7 +49,7 @@ const chatSlice = createSlice({
       state.searchChatResults = payload;
     },
     clearData: state => {
-      state.loading = false;
+      state.loading = true;
       state.chatResults = [];
       state.searchChatResults = [];
       state.getChatsEventCalled = false;
@@ -65,12 +68,13 @@ const chatSlice = createSlice({
     },
     setHasUnreadMsgs: (state, { payload }) => {
       state.hasUnreadMsgs = payload;
-    }
+    },
   },
 });
 
 export const {
   getChats,
+  clearLoading,
   getChatsSuccess,
   getChatsFailure,
   setChatResults,
@@ -79,7 +83,7 @@ export const {
   setNewChatList,
   setCurrentOpenedChat,
   setUnsubscribeSnapshot,
-  setHasUnreadMsgs
+  setHasUnreadMsgs,
 } = chatSlice.actions;
 
 export const chatSelector = state => state.chat;
