@@ -77,8 +77,11 @@ export default function ChatRoom({ route, navigation }) {
         displaypic: senderInfo.displaypic,
       });
     }
-    if (chatResults && chatResults.length) {
-      listenForThread();
+    if (
+      chatResults &&
+      chatResults.length
+    ) {
+      listenForThread()
     }
   }, [chatResults]);
 
@@ -116,11 +119,6 @@ export default function ChatRoom({ route, navigation }) {
       console.log('unmounting');
       backhandler.remove();
       messagesListener();
-
-      chatResults.map(data => {
-        markMessagesRead(data);
-      });
-
       // threadListener();
       // dispatch(setCurrentOpenedChat({}))
     };
@@ -220,27 +218,23 @@ export default function ChatRoom({ route, navigation }) {
     });
   };
 
-  const markMessagesRead = async data => {
-    if (
-      data &&
-      data.latestMessage &&
-      data.latestMessage.senderId !== userInfo._id &&
-      data.latestMessage.read == false
-    ) {
+  const markMessagesRead = async (data) => {
+    if (data && data.latestMessage && data.latestMessage.senderId !== userInfo._id && data.latestMessage.read == false) {
       console.log('markMessagesRead');
 
       var updateObj = {
         latestMessage: {
           ...data.latestMessage,
-          read: false,
+          read: true
         },
       };
       await firestore()
         .collection('THREADS')
         .doc(thread._id)
         .set(updateObj, { merge: true });
-    }
-  };
+    };
+  }
+
 
   const handleSend = messages => {
     const text = messages[0].text;
@@ -294,14 +288,14 @@ export default function ChatRoom({ route, navigation }) {
           name: userInfo.username,
           displaypic: userInfo.displaypic,
         },
-        { ...senderObj },
+        { ...senderObj }
       ],
       latestMessage: {
         text: text,
         createdAt: new Date().getTime(),
         serverTime: new Date().getTime(),
         senderId: userInfo._id,
-        read: false,
+        read: false
         // serverTime: firestore.FieldValue.serverTimestamp()
       },
       deletedIds: [], //firestore.FieldValue.arrayRemove(userInfo._id),
@@ -814,17 +808,17 @@ export default function ChatRoom({ route, navigation }) {
           // renderSystemMessage={renderSystemMessage}
           showAvatarForEveryMessage={false}
           renderAvatarOnTop={true}
-          // renderActions={() => (
-          //     <Feather
-          //         style={styles.uploadImage}
-          //         onPress={this.uploadImage}
-          //         name='image'
-          //         size={30}
-          //         color='#000'
-          //     />
-          // )}
-          // bottomOffset={155}
-          // isTyping={true}
+        // renderActions={() => (
+        //     <Feather
+        //         style={styles.uploadImage}
+        //         onPress={this.uploadImage}
+        //         name='image'
+        //         size={30}
+        //         color='#000'
+        //     />
+        // )}
+        // bottomOffset={155}
+        // isTyping={true}
         />
       )}
     </View>
