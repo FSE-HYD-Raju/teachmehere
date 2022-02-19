@@ -55,7 +55,7 @@ const TabNavigation = props => {
   const [versionUpdate, setVersionUpdate] = useState(null);
 
   useEffect(() => {
-    checkVersion('0.0.1');
+    checkVersion('2.1.1');
   }, []);
 
   useEffect(() => {
@@ -233,6 +233,12 @@ const TabNavigation = props => {
     );
   };
 
+  const tabBarListerners = ({ navigation, route }) => ({
+    tabPress: () => {
+      if (!userInfo._id) navigation.navigate(route.name);
+    },
+  });
+
   function MyTabs() {
     if (versionUpdate === false) {
       versionUpdateAlert();
@@ -300,6 +306,7 @@ const TabNavigation = props => {
                 />
               ),
             }}
+            listeners={tabBarListerners}
           />
           <Tab.Screen
             name="Profile"
