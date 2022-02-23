@@ -24,15 +24,12 @@ export default function SearchLandingPage({ searchChipSelected, navigation }) {
     recentlySearchedText,
     recentlyViewedCourses,
     topCategories,
-    topCategoriesLoading
+    topCategoriesLoading,
   } = useSelector(searchSelector);
 
   useEffect(() => {
-    if (!topCategories || !topCategories.length)
-      dispatch(fetchTopCategories())
-
+    if (!topCategories || !topCategories.length) dispatch(fetchTopCategories());
   }, []);
-
 
   const showCategorySkills = category => {
     navigation.navigate('SkillListView', {
@@ -87,7 +84,7 @@ export default function SearchLandingPage({ searchChipSelected, navigation }) {
               renderItem={({ item }) => {
                 return (
                   <View style={styles.recentlyViewedCoursesTextIcon}>
-                    <View style={{ flex: 0.9 }}>
+                    <View style={{ width: '100%', paddingRight: 10 }}>
                       <CourseListCard
                         course={item}
                         courseClicked={() =>
@@ -98,9 +95,18 @@ export default function SearchLandingPage({ searchChipSelected, navigation }) {
                         wishlistClicked={() =>
                           alert('Imagine skill added to wishlist')
                         }
+                        showDelete={true}
+                        deleteFun={() =>
+                          dispatch(
+                            removeRecentlyViewedCourses(
+                              item,
+                              recentlyViewedCourses,
+                            ),
+                          )
+                        }
                       />
                     </View>
-                    <View style={{ flex: 0.1 }}>
+                    {/* <View style={{ flex: 0.1 }}>
                       <IconMaterialIcons
                         name={'cancel'}
                         color="rgb(102, 94, 94)"
@@ -115,7 +121,7 @@ export default function SearchLandingPage({ searchChipSelected, navigation }) {
                           )
                         }
                       />
-                    </View>
+                    </View> */}
                   </View>
                 );
               }}

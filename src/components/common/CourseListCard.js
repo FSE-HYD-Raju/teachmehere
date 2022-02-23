@@ -6,39 +6,38 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Image,
-  Alert
+  Alert,
 } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { Card, Avatar, Badge, Icon, Rating } from 'react-native-elements';
 import Price from '../common/Price';
 import moment from 'moment';
-import IconMaterialIcons from 'react-native-vector-icons/FontAwesome';
+import IconMaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import PageSpinner from './PageSpinner';
-import { setReqFavPostedCount, setReqCount } from '../../redux/slices/loginSlice';
 import {
-  setRequestedSkills,
-} from '../../redux/slices/profileSlice';
-
-
+  setReqFavPostedCount,
+  setReqCount,
+} from '../../redux/slices/loginSlice';
+import { setRequestedSkills } from '../../redux/slices/profileSlice';
 
 export default function CourseListCard({
   course,
   courseClicked,
   wishlistClicked,
   cardWidth,
-  showDelete = false
+  showDelete = false,
+  deleteFun = null,
 }) {
   const userProfilePic =
     course && course.displaypic
       ? {
-        uri: course.displaypic,
-      }
+          uri: course.displaypic,
+        }
       : // { uri: "https://bootdey.com/img/Content/avatar/avatar7.png" }
-      require('../../assets/img/default-mask-avatar.png');
+        require('../../assets/img/default-mask-avatar.png');
 
   const [loading, setLoading] = React.useState(false);
   const dispatch = useDispatch();
-
 
   const deleteSkillAlert = () =>
     Alert.alert(
@@ -55,7 +54,6 @@ export default function CourseListCard({
       { cancelable: false },
     );
 
-
   const deleteSkill = () => {
     setLoading(true);
     fetch('https://teachmeproject.herokuapp.com/removeFromRequestedCourses', {
@@ -66,15 +64,14 @@ export default function CourseListCard({
       },
       body: JSON.stringify({
         uid: course.request_uid,
-        courseid: course._id
+        courseid: course._id,
       }),
     })
       .then(response => response.json())
       .then(responseJson => {
         console.log(responseJson.length);
-        if (responseJson)
-          dispatch(setRequestedSkills(responseJson));
-        dispatch(setReqCount(responseJson.length))
+        if (responseJson) dispatch(setRequestedSkills(responseJson));
+        dispatch(setReqCount(responseJson.length));
         setLoading(false);
       })
       .catch(error => {
@@ -83,25 +80,25 @@ export default function CourseListCard({
       });
   };
 
-
   return (
     <>
       <TouchableOpacity onPress={courseClicked}>
         <View style={styles.card}>
-          <View style={{
-            position: 'absolute',
-            justifyContent: 'flex-end',
-            alignItems: 'flex-end',
-            width: '100%',
-            zIndex: 9
-            // padding: 15,
-            // paddingRight: 10,
-            // marginVertical: 0,
-            // marginRight: 30,
-          }}>
+          <View
+            style={{
+              position: 'absolute',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end',
+              width: '100%',
+              zIndex: 9,
+              // padding: 15,
+              // paddingRight: 10,
+              // marginVertical: 0,
+              // marginRight: 30,
+            }}>
             {showDelete && (
               <TouchableOpacity
-                onPress={deleteSkillAlert}
+                onPress={deleteFun ? deleteFun : deleteSkillAlert}
                 style={{
                   // backgroundColor: 'red',
                   alignItems: 'center',
@@ -112,7 +109,7 @@ export default function CourseListCard({
                   // width: 50
                 }}>
                 <IconMaterialIcons
-                  name={'trash-o'}
+                  name={deleteFun ? 'close' : 'delete-outline'}
                   color="black"
                   size={20}
                   style={{ height: 20 }}
@@ -168,7 +165,6 @@ export default function CourseListCard({
       </TouchableOpacity>
       <PageSpinner visible={loading} />
     </>
-
   );
 }
 

@@ -117,7 +117,7 @@ export function fetchSearchResults(data) {
         var availableData = [...getState().search.searchResults.response];
         response.data.response = availableData.concat(response.data.response);
       }
-      console.log(response.data.response);
+      // console.log(response.data.response);
       dispatch(getSearchResultsSuccess(response.data));
     } catch (error) {
       dispatch(getSearchResultsFailure());
@@ -157,7 +157,7 @@ export function updateRecentSearches(
         ? [...recentlyViewedCourses]
         : [];
 
-      if (!temprecentlySearchedText.includes(item.search)) {
+      if (item.search && !temprecentlySearchedText.includes(item.search)) {
         temprecentlySearchedText.length > 5
           ? temprecentlySearchedText.pop()
           : temprecentlySearchedText.unshift(item.search);

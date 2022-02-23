@@ -7,6 +7,7 @@ import {
   ScrollView,
   Image,
   Share,
+  BackHandler,
 } from 'react-native';
 import { Icon, Rating } from 'react-native-elements';
 import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -20,7 +21,10 @@ import { random_rgba } from '../utils/random_rgba';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLocale } from 'yup';
 import { homeSelector } from '../redux/slices/homeSlice';
-import { loginSelector, setReqFavPostedCount } from '../redux/slices/loginSlice';
+import {
+  loginSelector,
+  setReqFavPostedCount,
+} from '../redux/slices/loginSlice';
 import IconMaterialIcons from 'react-native-vector-icons/FontAwesome';
 import { Illustrations } from '../assets/illustrations';
 
@@ -79,10 +83,24 @@ export default function SkillDetail({ route, navigation }) {
     // }
   }, [userInfo]);
 
+  const backButtonHandler = () => {
+    return BackHandler.addEventListener('hardwareBackPress', () => {
+      navigation.goBack();
+      return true;
+    });
+  };
+
+  useEffect(() => {
+    let backhandler = backButtonHandler();
+    return () => {
+      backhandler.remove();
+    };
+  });
+
   const getRequetedCourses = uid => {
     setLoading(true);
-    setAreConnected(false)
-    setRequestSent(false)
+    setAreConnected(false);
+    setRequestSent(false);
     fetch('https://teachmeproject.herokuapp.com/requestedCoursesByid', {
       method: 'POST',
       headers: {
@@ -101,18 +119,26 @@ export default function SkillDetail({ route, navigation }) {
         let reqObj = responseJson.filter(obj => obj._id == skill._id);
 
         let connectedOj = responseJson.filter(obj => {
-          console.log(obj.request_uid)
-          return (((obj.courseuid == skill.uid && obj.request_uid == userInfo._id) || (obj.courseuid == userInfo._id && obj.request_uid == skill.uid)) && obj.request_status === "ACCEPTED")
-        })
+          console.log(obj.request_uid);
+          return (
+            ((obj.courseuid == skill.uid && obj.request_uid == userInfo._id) ||
+              (obj.courseuid == userInfo._id &&
+                obj.request_uid == skill.uid)) &&
+            obj.request_status === 'ACCEPTED'
+          );
+        });
         let requestSentObj = responseJson.filter(obj => {
-          console.log(obj.request_uid)
-          return (((obj.courseuid == skill.uid && obj.request_uid == userInfo._id) || (obj.courseuid == userInfo._id && obj.request_uid == skill.uid)))
-        })
+          console.log(obj.request_uid);
+          return (
+            (obj.courseuid == skill.uid && obj.request_uid == userInfo._id) ||
+            (obj.courseuid == userInfo._id && obj.request_uid == skill.uid)
+          );
+        });
         if (requestSentObj.length) {
-          setRequestSent(true)
+          setRequestSent(true);
         }
         if (connectedOj.length) {
-          setAreConnected(true)
+          setAreConnected(true);
         }
         if (reqObj.length) {
           setRequestedObj(reqObj[0]);
@@ -194,7 +220,6 @@ export default function SkillDetail({ route, navigation }) {
           }
           style={styles.imgStyle}
         />
-
       </View>
     );
   };
@@ -260,7 +285,6 @@ export default function SkillDetail({ route, navigation }) {
       !!requestedObj &&
       requestedObj.request_status == 'ACCEPTED';
 
-
     const onShare = async () => {
       try {
         const result = await Share.share({
@@ -314,7 +338,7 @@ export default function SkillDetail({ route, navigation }) {
                 ? { uri: skill.displaypic }
                 : require('../assets/img/default-mask-avatar.png')
             }
-          // source={require('../assets/img/defaultAvatar.png')}
+            // source={require('../assets/img/defaultAvatar.png')}
           />
           <Text
             style={{
@@ -759,7 +783,7 @@ export default function SkillDetail({ route, navigation }) {
             createdAt: Date.now(),
             system: true,
           })
-          .then(() => { });
+          .then(() => {});
       });
 
       var itemObj = {
@@ -820,7 +844,7 @@ export default function SkillDetail({ route, navigation }) {
             onPress={checkIfChatExists}>
             Message
           </Button>
-        ) :
+        ) : (
           <Button
             disabled={true}
             mode="contained"
@@ -828,7 +852,7 @@ export default function SkillDetail({ route, navigation }) {
             labelStyle={globalStyles.btnLabelStyle}>
             {requestedObj.request_status}
           </Button>
-        }
+        )}
         {/* </View> */}
       </View>
     );

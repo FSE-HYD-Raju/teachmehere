@@ -189,6 +189,7 @@ const TabNavigation = props => {
         <Stack.Screen name="SearchPage" component={Search} />
         <Stack.Screen name="SkillDetail" component={SkillDetail} />
         <Stack.Screen name="UserDetailsPage" component={UserDetailsPage} />
+        <Stack.Screen name="SkillListView" component={SkillListView} />
       </Stack.Navigator>
     );
   }

@@ -24,11 +24,12 @@ export default function SearchPage({ navigation }) {
 
   const timerRef = useRef(null);
   const searchBarRef = useRef(null);
+  let backhandler;
   // const SCREEN_WIDTH = Dimensions.get('window').width;
   // clearAsyncData()
 
   const backButtonHandler = () => {
-    return BackHandler.addEventListener('hardwareBackPress', function () {
+    return BackHandler.addEventListener('hardwareBackPress', function() {
       if (openFilterPage) {
         setOpenFilterPage(false);
         return true;
@@ -41,7 +42,8 @@ export default function SearchPage({ navigation }) {
   };
 
   useEffect(() => {
-    let backhandler = backButtonHandler();
+    backhandler && backhandler.remove();
+    backhandler = backButtonHandler();
     return () => {
       backhandler.remove();
     };
@@ -82,12 +84,15 @@ export default function SearchPage({ navigation }) {
   };
 
   const applyFilter = filterObj => {
-    console.log(filterObj);
+    console.log('filterObj');
+    console.log(JSON.stringify(filterObj));
     setOpenFilterPage(false);
     var filter = {};
     if (filterObj && filterObj['$and'] && filterObj['$and'].length)
       filter = filterObj;
     dispatch(setFilterObj(filterObj));
+    console.log('filter');
+    console.log(filter);
     fetchData(searchQuery, filter);
   };
 
