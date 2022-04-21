@@ -80,6 +80,7 @@ export default function ChatRoom({ route, navigation }) {
     if (chatResults && chatResults.length) {
       listenForThread();
     }
+    console.log(chatResults, 'chatResults')
   }, [chatResults]);
 
   useEffect(() => {
@@ -116,7 +117,6 @@ export default function ChatRoom({ route, navigation }) {
       console.log('unmounting');
       backhandler.remove();
       messagesListener();
-
       chatResults.map(data => {
         markMessagesRead(data);
       });
@@ -221,18 +221,20 @@ export default function ChatRoom({ route, navigation }) {
   };
 
   const markMessagesRead = async data => {
+    console.log('data', data)
     if (
       data &&
       data.latestMessage &&
-      data.latestMessage.senderId !== userInfo._id &&
-      data.latestMessage.read == false
+      data.latestMessage.senderId !== userInfo._id
+      // &&
+      // data.latestMessage.read == false
     ) {
       console.log('markMessagesRead');
 
       var updateObj = {
         latestMessage: {
           ...data.latestMessage,
-          read: false,
+          read: true,
         },
       };
       await firestore()
@@ -302,6 +304,7 @@ export default function ChatRoom({ route, navigation }) {
         serverTime: new Date().getTime(),
         senderId: userInfo._id,
         read: false,
+        deletedIds: msgObj.deletedIds
         // serverTime: firestore.FieldValue.serverTimestamp()
       },
       deletedIds: [], //firestore.FieldValue.arrayRemove(userInfo._id),
@@ -814,17 +817,17 @@ export default function ChatRoom({ route, navigation }) {
           // renderSystemMessage={renderSystemMessage}
           showAvatarForEveryMessage={false}
           renderAvatarOnTop={true}
-          // renderActions={() => (
-          //     <Feather
-          //         style={styles.uploadImage}
-          //         onPress={this.uploadImage}
-          //         name='image'
-          //         size={30}
-          //         color='#000'
-          //     />
-          // )}
-          // bottomOffset={155}
-          // isTyping={true}
+        // renderActions={() => (
+        //     <Feather
+        //         style={styles.uploadImage}
+        //         onPress={this.uploadImage}
+        //         name='image'
+        //         size={30}
+        //         color='#000'
+        //     />
+        // )}
+        // bottomOffset={155}
+        // isTyping={true}
         />
       )}
     </View>

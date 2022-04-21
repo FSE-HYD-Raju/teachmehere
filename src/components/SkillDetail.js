@@ -288,15 +288,15 @@ export default function SkillDetail({ route, navigation }) {
     const onShare = async () => {
       try {
         const result = await Share.share({
-          title: 'Skill On',
+          title: 'TAG Skills',
           message:
             'Found a good course about ' +
             skill.coursename +
             ' for just ' +
             skill.currency +
             skill.price.oneonone +
-            ' in SkillOn App, Check it out! AppLink :https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
-          url: 'https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
+            ' in TAG Skills App, Check it out! AppLink :https://play.google.com/store/apps/details?id=com.tagskills',
+          url: 'https://play.google.com/store/apps/details?id=com.tagskills',
         });
         if (result.action === Share.sharedAction) {
           if (result.activityType) {

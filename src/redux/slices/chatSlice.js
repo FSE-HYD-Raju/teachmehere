@@ -108,6 +108,7 @@ export function fetchChats(userInfo) {
               const documentSnapshot = querySnapshot.docs[i];
               // res = querySnapshot.docs.map(documentSnapshot => {
               data = documentSnapshot.data();
+              console.log('tagg', data);
               senderDetails = data.userDetails.find(o => o.id != userInfo._id);
               didBlock =
                 data.blockedIds &&
@@ -143,7 +144,7 @@ export function fetchChats(userInfo) {
               // });
             }
           }
-          console.log('res0');
+          console.log('res0', res);
           // console.log(JSON.stringify(res))
           dispatch(getChatsSuccess(res));
         });
