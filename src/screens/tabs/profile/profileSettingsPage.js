@@ -29,10 +29,10 @@ export default function ProfileSettingsPage({ navigation }) {
   const onShare = async () => {
     try {
       const result = await Share.share({
-        title: 'TAG Skills',
+        title: 'Skill On',
         message:
-          'Checkout this  app where you can share skills while earning money or learn from the professionals within your budget.  AppLink :https://play.google.com/store/apps/details?id=com.tagskills',
-        url: 'https://play.google.com/store/apps/details?id=com.tagskills',
+          'Checkout this  app where you can share skills while earning money or learn from the professionals within your budget.  AppLink :https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
+        url: 'https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -200,7 +200,7 @@ export default function ProfileSettingsPage({ navigation }) {
             createdAt: Date.now(),
             system: true,
           })
-          .then(() => { });
+          .then(() => {});
       });
 
       var itemObj = {
@@ -261,7 +261,7 @@ export default function ProfileSettingsPage({ navigation }) {
           <TouchableOpacity
             onPress={() =>
               Linking.openURL(
-                'https://play.google.com/store/apps/details?id=com.tagskills',
+                'https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
               )
             }>
             <Surface style={styles.surface}>

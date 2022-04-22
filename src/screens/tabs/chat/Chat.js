@@ -100,29 +100,12 @@ export default function Chat({ navigation }) {
             keyExtractor={item => item._id}
             ItemSeparatorComponent={() => <Divider />}
             renderItem={({ item }) => {
-              console.log(item)
-              console.log('tag', item.latestMessage);
+              console.log(item.latestMessage);
               console.log(userInfo._id);
-
-
-              let senderId = item.ids.filter(id => id != userInfo._id)
-              senderId = senderId[0] || ''
-
-
-              let unreadMsg
-              let blocked = false
-
-
-              if (item?.blockedIds?.indexOf(senderId) > -1 || item?.latestMessage?.deletedIds?.indexOf(userInfo._id) > -1) {
-                blocked = item?.blockedIds?.indexOf(senderId) > -1 ? 'blocked' : ' '
-              } else {
-                unreadMsg =
-                  item.latestMessage?.read == false &&
-                  item.latestMessage?.senderId != userInfo._id;
-              }
-              let createdAt = item.latestMessage?.createdAt;
-
-
+              let unreadMsg =
+                item.latestMessage.read == false &&
+                item.latestMessage.senderId != userInfo._id;
+              let createdAt = item.latestMessage.createdAt;
               return (
                 <TouchableOpacity
                   onPress={() =>
@@ -130,7 +113,7 @@ export default function Chat({ navigation }) {
                   }>
                   <List.Item
                     title={item.name}
-                    description={blocked ? blocked : item.latestMessage.text}
+                    description={item.didBlock ? '' : item.latestMessage.text}
                     left={props => (
                       <Avatar
                         rounded
@@ -147,7 +130,7 @@ export default function Chat({ navigation }) {
                     right={props => {
                       return (
                         <View style={{ flexDirection: 'column' }}>
-                          {!blocked && <View>
+                          <View>
                             <Text
                               style={[
                                 styles.datetime,
@@ -159,10 +142,10 @@ export default function Chat({ navigation }) {
                               {moment(createdAt).isSame(TODAY, 'd')
                                 ? moment(createdAt).format('hh:mm A')
                                 : moment(createdAt).isSame(YESTERDAY, 'd')
-                                  ? moment(createdAt).format('ddd')
-                                  : moment(createdAt).format('MMM D')}
+                                ? moment(createdAt).format('ddd')
+                                : moment(createdAt).format('MMM D')}
                             </Text>
-                          </View>}
+                          </View>
                           {unreadMsg && (
                             <View
                               style={{

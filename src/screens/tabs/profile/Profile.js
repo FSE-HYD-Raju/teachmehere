@@ -7,7 +7,6 @@ import {
   ScrollView,
   Alert,
   RefreshControl,
-  Dimensions,
 } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { Avatar, ListItem } from 'react-native-elements';
@@ -186,7 +185,7 @@ export default function Profile({ route, navigation }) {
     return (
       <View style={styles.userImageContainer}>
         <Avatar
-          size={140}
+          size={155}
           showAccessory={true}
           onAccessoryPress={() => chooseFile()}
           accessory={{
@@ -360,7 +359,6 @@ export default function Profile({ route, navigation }) {
 const styles = StyleSheet.create({
   lowerContainer: {
     margin: 25,
-    // marginTop: 0,
     justifyContent: 'center',
   },
   surface: {
