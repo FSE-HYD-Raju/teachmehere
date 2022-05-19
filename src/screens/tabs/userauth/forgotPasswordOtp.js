@@ -192,10 +192,11 @@ export default function forgotPasswordOtpPage({ navigation }) {
           onSuccess: data => {
             dispatch(loadUserInfo(data));
             storeAsyncData('userInfo', data);
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Profile' }],
-            });
+            // navigation.reset({
+            //   index: 0,
+            //   routes: [{ name: 'BottomNav' }],
+            // });
+            navigation.popToTop();
           },
         }),
       );

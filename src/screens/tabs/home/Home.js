@@ -9,7 +9,7 @@ import {
   Image,
   Platform,
   FlatList,
-  RefreshControl
+  RefreshControl,
 } from 'react-native';
 import { ActivityIndicator } from 'react-native-paper';
 import SkillFlatList from '../../../components/common/SkillFlatList';
@@ -25,18 +25,27 @@ import messaging from '@react-native-firebase/messaging';
 import { loginSelector } from '../../../redux/slices/loginSlice';
 import PushNotification from 'react-native-push-notification';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import { useRoute } from '@react-navigation/native';
-import { chatSelector } from '../../../redux/slices/chatSlice';
+import { useIsFocused, useRoute } from '@react-navigation/native';
+import {
+  chatSelector,
+  setNotificationSubscribe,
+} from '../../../redux/slices/chatSlice';
 import { Illustrations } from '../../../assets/illustrations';
 
 import { getRecentSearches } from '../../../redux/slices/searchSlice';
-import { fetchInitialDataWhenAppLoading, fetchPostedSkills } from '../../../redux/slices/homeSlice';
+import {
+  fetchInitialDataWhenAppLoading,
+  fetchPostedSkills,
+} from '../../../redux/slices/homeSlice';
+import DoubleTapToClose from '../../../components/common/DoubleTapToClose';
 
 export default function Home(props) {
   const { homeData, loading, homeSkillsData } = useSelector(homeSelector);
-  const { currentOpenedChat } = useSelector(chatSelector)
-  let currOpenedChat = currentOpenedChat
-  console.log(currentOpenedChat._id, 'dasfas')
+  const { currentOpenedChat, notificationsubscribe } = useSelector(
+    chatSelector,
+  );
+  let currOpenedChat = currentOpenedChat;
+  console.log(currentOpenedChat._id, 'dasfas');
   const { userInfo } = useSelector(loginSelector);
   const carouselRef = useRef(null);
   const [screenWidth, setScreenWidth] = useState(
@@ -45,9 +54,11 @@ export default function Home(props) {
   const dispatch = useDispatch();
   var notificunsubscribe = null;
   var focusNotiMsg = null;
-  var lastMessageId = "";
+  var lastMessageId = '';
   const route = useRoute();
   console.log(route.name);
+
+  const isFocused = useIsFocused();
 
   const showMore = group => {
     props.navigation.navigate('SkillListView', {
@@ -64,13 +75,14 @@ export default function Home(props) {
   };
 
   useEffect(() => {
-    if (userInfo._id && !notificunsubscribe) {
+    if (userInfo._id && !notificationsubscribe) {
       notificationListener();
       appOpenedNotificationListener();
     }
     return () => {
-      if (notificunsubscribe) {
+      if (notificunsubscribe && notificationsubscribe) {
         notificunsubscribe();
+        dispatch(setNotificationSubscribe(false));
       }
     };
   }, [userInfo]);
@@ -86,7 +98,7 @@ export default function Home(props) {
 
   const notificationListener = async () => {
     PushNotification.configure({
-      onNotification: function (notification) {
+      onNotification: function(notification) {
         console.log('notificationListener');
 
         if (
@@ -103,20 +115,23 @@ export default function Home(props) {
           // props.navigation.push('ChatRoom', {
           //   thread: JSON.parse(focusNotiMsg.data.data),
           // });
-          focusNotiMsg.data.data.fromNotification = true
-          props.navigation.navigate('Chat', { screen: 'ChatRoom', params: { thread: JSON.parse(focusNotiMsg.data.data) } })
+          focusNotiMsg.data.data.fromNotification = true;
+          props.navigation.navigate('ChatRoom', {
+            thread: JSON.parse(focusNotiMsg.data.data),
+          });
 
           // props.navigation.navigate('Chat')
 
           // props.navigation.navigate('ChatRoom', { thread: JSON.parse(focusNotiMsg.data.data) })
-
         } else if (
           notification &&
           notification.data &&
           notification.data.type == 'CHAT'
         ) {
-          notification.data.fromNotification = true
-          props.navigation.navigate('Chat', { screen: 'ChatRoom', params: { thread: notification.data } })
+          notification.data.fromNotification = true;
+          props.navigation.navigate('ChatRoom', {
+            thread: notification.data,
+          });
 
           // props.navigation.navigate('Chat')
 
@@ -128,7 +143,7 @@ export default function Home(props) {
           //   routes: [{ name: 'ChatPage' }, { name: 'ChatRoom' }],
           // });
         } else {
-          props.navigation.navigate('Home', { screen: 'Notification' })
+          props.navigation.navigate('Notification');
 
           // props.navigation.push('Notification');
         }
@@ -139,9 +154,8 @@ export default function Home(props) {
   };
 
   const getCur = () => {
-
-    return currentOpenedChat._id || null
-  }
+    return currentOpenedChat._id || null;
+  };
 
   const appOpenedNotificationListener = () => {
     notificunsubscribe = messaging().onMessage(async remoteMessage => {
@@ -153,14 +167,14 @@ export default function Home(props) {
       console.log(JSON.parse(remoteMessage.data.data)._id);
       console.log(remoteMessage.data.data);
 
-      let remoteData = JSON.parse(remoteMessage?.data?.data)?._id || ''
+      let remoteData = JSON.parse(remoteMessage?.data?.data)?._id || '';
       // alert(remoteData)
 
       focusNotiMsg = remoteMessage;
       if (remoteMessage.messageId !== lastMessageId) {
-        lastMessageId = remoteMessage.messageId
+        lastMessageId = remoteMessage.messageId;
         PushNotification.localNotification({
-          largeIcon: "ic_launcher",
+          largeIcon: 'ic_launcher',
           smallIcon: 'ic_launcher',
           autoCancel: true,
           bigText: remoteMessage.data.body,
@@ -177,9 +191,10 @@ export default function Home(props) {
       }
       PushNotification.cancelLocalNotification({ id: id });
 
-
       // alert('A new FCM message arrived!' + JSON.stringify(remoteMessage));
     });
+
+    dispatch(setNotificationSubscribe(true));
   };
 
   const headerComponent = () => {
@@ -218,8 +233,7 @@ export default function Home(props) {
             borderWidth: 0.5,
             backgroundColor: 'rgba(243, 246, 252, 0.7)',
           }}
-          key={index}
-        >
+          key={index}>
           <ParallaxImage
             source={Illustrations[item.illustration]}
             containerStyle={styles.imageContainer}
@@ -277,8 +291,8 @@ export default function Home(props) {
           <CategoryWrapper
             title={'Top Categories'}
             hideBtn={true}
-          // btnText={''}
-          // onButtonPress={() => showMore({})}
+            // btnText={''}
+            // onButtonPress={() => showMore({})}
           />
           <View style={{ marginLeft: 15 }}>
             <CategoryChipView
@@ -411,16 +425,11 @@ export default function Home(props) {
     }
   };
 
-
   return (
     <View style={styles.container}>
       <ScrollView
         refreshControl={
-          <RefreshControl
-            refreshing={false}
-            onRefresh={loadInitialData}
-
-          />
+          <RefreshControl refreshing={false} onRefresh={loadInitialData} />
         }
         onLayout={() => setScreenWidth(Dimensions.get('window').width)}>
         {headerComponent()}
@@ -429,6 +438,7 @@ export default function Home(props) {
         {dataGroupsComponent()}
       </ScrollView>
       {!!loading && loadingComponent()}
+      {isFocused && <DoubleTapToClose message="Tap again to exit app" />}
     </View>
   );
 }

@@ -122,6 +122,15 @@ def jscFlavor = 'org.webkit:android-jsc:+'
 def enableHermes = project.ext.react.get("enableHermes", false);
 
 android {
+    // packagingOptions {
+    //    pickFirst 'lib/x86/libc++_shared.so'
+    //    pickFirst 'lib/x86_64/libjsc.so'
+    //    pickFirst 'lib/arm64-v8a/libjsc.so'
+    //    pickFirst 'lib/arm64-v8a/libc++_shared.so'
+    //    pickFirst 'lib/x86_64/libc++_shared.so'
+    //    pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+    //  }
+
     compileSdkVersion rootProject.ext.compileSdkVersion
 
     compileOptions {
@@ -200,13 +209,17 @@ android {
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:30.0.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-iid'
+
     compile 'com.facebook.fresco:fresco:1.+'
 
     // For animated GIF support
     implementation 'com.facebook.fresco:animated-gif:2.0.0'
 
     implementation fileTree(dir: "libs", include: ["*.jar"])
-    implementation 'com.google.firebase:firebase-analytics:17.2.2'
+    // implementation 'com.google.firebase:firebase-analytics:17.2.2'
     //noinspection GradleDynamicVersion
     implementation "com.facebook.react:react-native:+"  // From node_modules
 
@@ -218,6 +231,7 @@ dependencies {
 
     debugImplementation("com.facebook.flipper:flipper-network-plugin:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.flipper'
+        exclude group:'com.squareup.okhttp3', module:'okhttp'
     }
 
     debugImplementation("com.facebook.flipper:flipper-fresco-plugin:${FLIPPER_VERSION}") {

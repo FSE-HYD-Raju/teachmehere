@@ -144,12 +144,7 @@ export default function PostedCoursesPage({ navigation }) {
           // color="#fff"
           size={27}
           style={{ flex: 0.2 }}
-          onPress={() =>
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'Profile' }],
-            })
-          }
+          onPress={() => navigation.goBack()}
         />
         <View
           style={{

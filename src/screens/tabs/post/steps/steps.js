@@ -23,8 +23,8 @@ import { loginSelector } from '../../../../redux/slices/loginSlice';
 const allSteps = [
   { name: 'step 1', component: Step1 },
   { name: 'step 2', component: Step2 },
-  { name: 'step 3', component: Step3 },
-  { name: 'step 4', component: Step4 },
+  // { name: 'step 3', component: Step3 },
+  { name: 'step 3', component: Step4 },
 ];
 
 const Steps = props => {

@@ -7,6 +7,7 @@ import {
   ScrollView,
   Alert,
   RefreshControl,
+  Dimensions,
 } from 'react-native';
 import { Surface } from 'react-native-paper';
 import { Avatar, ListItem } from 'react-native-elements';
@@ -21,9 +22,7 @@ import {
   logoutDone,
   logoutSuccess,
 } from '../../../redux/slices/loginSlice';
-import {
-  profileSelector
-} from '../../../redux/slices/profileSlice'
+import { profileSelector } from '../../../redux/slices/profileSlice';
 import {
   onChangeImagePressed,
   changeProfileSelector,
@@ -42,9 +41,7 @@ export default function Profile({ route, navigation }) {
     devicetoken,
     profileLoading,
   } = useSelector(loginSelector);
-  const {
-    requestedSkills,
-  } = useSelector(profileSelector);
+  const { requestedSkills } = useSelector(profileSelector);
   const { loading } = useSelector(changeProfileSelector);
   console.log('profileLoading', profileLoading);
   // const { reqFavPostedCount } = useSelector(profileSelector);
@@ -70,10 +67,12 @@ export default function Profile({ route, navigation }) {
       logOutUser({
         uid: userInfo._id,
         onSuccess: () => {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'GuestPage' }],
-          });
+          // navigation.reset({
+          //   index: 0,
+          //   routes: [{ name: 'GuestPage' }],
+          // });
+          // navigation.goBack();
+          navigation.navigate('GuestPage');
         },
       }),
     );
@@ -97,7 +96,8 @@ export default function Profile({ route, navigation }) {
   const settingsIconContainer = () => {
     return (
       <View style={styles.settingsIconContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('ProfileSettings')} >
+        <TouchableOpacity
+          onPress={() => navigation.navigate('ProfileSettings')}>
           <IconMaterialIcons
             name={'settings'}
             color="rgb(102, 94, 94)"
@@ -185,7 +185,7 @@ export default function Profile({ route, navigation }) {
     return (
       <View style={styles.userImageContainer}>
         <Avatar
-          size={155}
+          size={140}
           showAccessory={true}
           onAccessoryPress={() => chooseFile()}
           accessory={{
@@ -248,7 +248,9 @@ export default function Profile({ route, navigation }) {
             onPress={() => navigation.navigate('RequestedCourses')}>
             <Surface style={styles.surfaceReq}>
               <Text style={styles.statValue}>
-                {!!requestedSkills && requestedSkills.length ? requestedSkills.length : reqFavPostedCount.requestedcoursescount}
+                {!!requestedSkills && requestedSkills.length
+                  ? requestedSkills.length
+                  : reqFavPostedCount.requestedcoursescount}
               </Text>
               <Text style={styles.statText}>Requested {'\n'}Skills</Text>
             </Surface>
@@ -359,6 +361,7 @@ export default function Profile({ route, navigation }) {
 const styles = StyleSheet.create({
   lowerContainer: {
     margin: 25,
+    // marginTop: 0,
     justifyContent: 'center',
   },
   surface: {

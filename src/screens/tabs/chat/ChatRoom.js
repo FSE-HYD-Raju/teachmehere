@@ -41,12 +41,18 @@ export default function ChatRoom({ route, navigation }) {
   );
   const dispatch = useDispatch();
 
-  const { thread } = route.params || {};
+  const [thread, setThread] = useState(route.params?.thread || {});
+  console.log('thread', thread);
   const [newChat, setNewChat] = useState(thread.newChat);
   const [fetchedChatData, setFetchedChatData] = useState(false);
   const [senderObj, setSenderObj] = useState(
-    thread.userDetails.find(o => o.id != userInfo._id),
+    thread.userDetails.find(o => {
+      console.log('o', o);
+      return o.id != userInfo._id;
+    }),
   );
+
+  console.log('senderObj', senderObj);
 
   const backButtonHandler = () => {
     return BackHandler.addEventListener('hardwareBackPress', () => {
@@ -61,14 +67,22 @@ export default function ChatRoom({ route, navigation }) {
 
   useEffect(() => {
     if (
-      !fetchedChatData &&
-      thread.fromNotification &&
-      !senderObj.displaypic &&
+      // !fetchedChatData &&
+      // thread.fromNotification &&
+      // !senderObj.displaypic &&
       chatResults &&
       chatResults.length
     ) {
       const currentChat = chatResults.filter(chat => chat._id == thread._id);
-      setFetchedChatData(true);
+
+      if (currentChat && currentChat.length && currentChat !== thread) {
+        console.log('currentChat', currentChat);
+        setThread(currentChat[0]);
+        // alert(JSON.stringify(currentChat[0].blockedIds));
+
+        checkBlockedChat(currentChat[0]);
+      }
+      // setFetchedChatData(true);
       const senderInfo = currentChat[0].userDetails.find(
         o => o.id != userInfo._id,
       );
@@ -77,9 +91,8 @@ export default function ChatRoom({ route, navigation }) {
         displaypic: senderInfo.displaypic,
       });
     }
-    if (chatResults && chatResults.length) {
-      listenForThread();
-    }
+
+    console.log(chatResults, 'chatResults');
   }, [chatResults]);
 
   useEffect(() => {
@@ -87,20 +100,6 @@ export default function ChatRoom({ route, navigation }) {
       dispatch(fetchChats(userInfo));
     }
     dispatch(setCurrentOpenedChat(thread));
-    if (
-      thread.blockedIds &&
-      thread.blockedIds.length &&
-      thread.blockedIds.indexOf(userInfo._id) > -1
-    ) {
-      setGotBlocked(true);
-    }
-    if (
-      thread.blockedIds &&
-      thread.blockedIds.length &&
-      thread.blockedIds.indexOf(senderObj.id) > -1
-    ) {
-      setDidBlock(true);
-    }
 
     console.log('in useeffect ', messages);
 
@@ -116,10 +115,9 @@ export default function ChatRoom({ route, navigation }) {
       console.log('unmounting');
       backhandler.remove();
       messagesListener();
-
-      chatResults.map(data => {
-        markMessagesRead(data);
-      });
+      // chatResults.map(data => {
+      markMessagesRead(thread);
+      // });
 
       // threadListener();
       // dispatch(setCurrentOpenedChat({}))
@@ -137,15 +135,24 @@ export default function ChatRoom({ route, navigation }) {
         .delete()
         .then(() => {
           if (navigation.canGoBack())
-            setTimeout(() => {
-              navigation.goBack();
-              navigation.navigate('Chat', { screen: 'ChatPage' });
-            }, 100);
+            // setTimeout(() => {
+            navigation.goBack();
+          // navigation.navigate('Chat', { screen: 'ChatPage' });
+          // }, 100);
+          else
+            navigation.reset({
+              index: 0,
+              routes: [{ name: 'BottomNav' }],
+            });
         });
     } else if (navigation.canGoBack()) {
       navigation.goBack();
-      navigation.navigate('Chat', { screen: 'ChatPage' });
-    }
+      // navigation.navigate('Chat', { screen: 'ChatPage' });
+    } else
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'BottomNav' }],
+      });
   };
 
   const getMessages = () => {
@@ -198,41 +205,63 @@ export default function ChatRoom({ route, navigation }) {
       });
   };
 
-  const listenForThread = () => {
-    chatResults.map(data => {
-      // for (var i in querySnapshot.docs) {
-      console.log('listenforthresads');
+  const checkBlockedChat = data => {
+    // thread..map(data => {
+    //   // for (var i in querySnapshot.docs) {
+    //   console.log('listenforthresads');
 
-      console.log(data);
-      // alert(JSON.stringify(data))
-      if (
-        data &&
-        data.blockedIds &&
-        data.blockedIds.length &&
-        data.blockedIds.indexOf(userInfo._id) > -1
-      ) {
-        setGotBlocked(true);
-      } else {
-        setGotBlocked(false);
-      }
-      // markMessagesRead(data);
-      // }
-    });
+    //   console.log(data);
+    //   alert(JSON.stringify(data.blockedIds));
+    if (
+      data.blockedIds &&
+      data.blockedIds.length &&
+      data.blockedIds.indexOf(userInfo._id) > -1
+    ) {
+      // alert('You have been blocked by this user');
+      setGotBlocked(true);
+    } else {
+      setGotBlocked(false);
+    }
+    if (
+      data.blockedIds &&
+      data.blockedIds.length &&
+      data.blockedIds.indexOf(senderObj.id) > -1
+    ) {
+      setDidBlock(true);
+    } else {
+      setDidBlock(false);
+    }
+
+    // if (
+    //   thread &&
+    //   thread.blockedIds &&
+    //   thread.blockedIds.length &&
+    //   thread.blockedIds.indexOf(userInfo._id) > -1
+    // ) {
+    //   setGotBlocked(true);
+    // } else {
+    //   setGotBlocked(false);
+    // }
+    // markMessagesRead(data);
+    // }
+    // });
   };
 
   const markMessagesRead = async data => {
+    console.log('data', data);
     if (
       data &&
       data.latestMessage &&
-      data.latestMessage.senderId !== userInfo._id &&
-      data.latestMessage.read == false
+      data.latestMessage.senderId !== userInfo._id
+      // &&
+      // data.latestMessage.read == false
     ) {
       console.log('markMessagesRead');
 
       var updateObj = {
         latestMessage: {
-          ...data.latestMessage,
-          read: false,
+          // ...data.latestMessage,
+          read: true,
         },
       };
       await firestore()
@@ -282,6 +311,8 @@ export default function ChatRoom({ route, navigation }) {
         name: userInfo.username,
       },
     };
+    // alert(gotBlocked);
+
     if (gotBlocked) {
       // msgObj.deletedIds = firestore.FieldValue.arrayRemove(userInfo._id)
       msgObj.deletedIds = [senderObj.id];
@@ -302,6 +333,7 @@ export default function ChatRoom({ route, navigation }) {
         serverTime: new Date().getTime(),
         senderId: userInfo._id,
         read: false,
+        // deletedIds: msgObj.deletedIds,
         // serverTime: firestore.FieldValue.serverTimestamp()
       },
       deletedIds: [], //firestore.FieldValue.arrayRemove(userInfo._id),
@@ -484,7 +516,7 @@ export default function ChatRoom({ route, navigation }) {
             paddingRight: 5,
           },
           left: {
-            paddingLeft: 10,
+            paddingLeft: 0,
           },
         }}
       />
@@ -587,7 +619,7 @@ export default function ChatRoom({ route, navigation }) {
     // }
 
     navigation.goBack();
-    navigation.navigate('Chat', { screen: 'ChatPage' });
+    // navigation.navigate('ChatPage');
     dispatch(setLoading(false));
     return;
   };
@@ -758,6 +790,7 @@ export default function ChatRoom({ route, navigation }) {
               />
               <Text style={styles.headerTitle} numberOfLines={1}>
                 {senderObj.name}
+                {/* {alert(senderObj.id)} */}
               </Text>
             </View>
           </TouchableOpacity>

@@ -4,7 +4,7 @@ import { createMaterialBottomTabNavigator } from '@react-navigation/material-bot
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { withTheme } from 'react-native-paper';
 import { createStackNavigator } from '@react-navigation/stack';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useRoute } from '@react-navigation/native';
 import Home from './screens/tabs/home/Home';
 import Search from './screens/tabs/search/Search';
 import Post from './screens/tabs/post/Post';
@@ -45,6 +45,18 @@ import signupDescPage from './screens/tabs/userauth/signupDesc';
 import feedbackPage from './screens/tabs/profile/feedbackPage';
 import UserDetailsPage from './screens/tabs/profile/userDetailsPage';
 import { Alert, Linking } from 'react-native';
+import DoubleTapToClose from './components/common/DoubleTapToClose';
+
+const isCurrentScreenInitialOne = state => {
+  const route = state.routes[state.index];
+  console.log(route);
+  if (route.state) {
+    // Dive into nested navigators
+    console.log(route.state);
+    return route.state.index === 0;
+  }
+  return route.name === 'Home';
+};
 
 const TabNavigation = props => {
   const dispatch = useDispatch();
@@ -53,6 +65,8 @@ const TabNavigation = props => {
   const Tab = createMaterialBottomTabNavigator();
   const { userInfo } = useSelector(loginSelector);
   const [versionUpdate, setVersionUpdate] = useState(null);
+  const [isTabVisible, setIsTabVisible] = useState(true);
+  const [isInitialScreen, setIsInitialScreen] = useState(false);
 
   useEffect(() => {
     checkVersion('2.1.1');
@@ -121,7 +135,7 @@ const TabNavigation = props => {
         initialRouteName={userInfo._id ? 'Profile' : 'GuestPage'}>
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="GuestPage" component={GuestPage} />
-        <Stack.Screen name="Login" component={LoginPage} />
+        {/* <Stack.Screen name="Login" component={LoginPage} />
         <Stack.Screen name="Signup" component={signupFormPage} />
         <Stack.Screen name="SignupOtp" component={signupOtpPage} />
         <Stack.Screen name="SignupDescPage" component={signupDescPage} />
@@ -142,7 +156,7 @@ const TabNavigation = props => {
         <Stack.Screen name="Feedback" component={feedbackPage} />
         <Stack.Screen name="UserDetailsPage" component={UserDetailsPage} />
         <Stack.Screen name="SkillDetail" component={SkillDetail} />
-        <Stack.Screen name="PostPage" component={Post} />
+        <Stack.Screen name="PostPage" component={Post} /> */}
       </Stack.Navigator>
     );
   }
@@ -240,95 +254,244 @@ const TabNavigation = props => {
     },
   });
 
+  const FooterNav = () => (
+    <Tab.Navigator
+      initialRouteName="Home"
+      backBehavior="firstRoute"
+      activeColor={'black'}
+      inactiveColor="grey"
+      barStyle={{
+        backgroundColor: colors.primary,
+        display: isTabVisible ? null : 'none',
+      }}
+      sceneAnimationEnabled={false}>
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarLabel: 'Home',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="home-outline"
+              color={color}
+              size={26}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="SearchPage"
+        component={Search}
+        options={{
+          tabBarLabel: 'Search',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons name="magnify" color={color} size={26} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="PostPage"
+        component={Post}
+        options={{
+          tabBarLabel: 'Post',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="plus-circle-outline"
+              color={color}
+              size={26}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="ChatPage"
+        component={Chat}
+        options={{
+          tabBarLabel: 'Chat',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="message-outline"
+              color={color}
+              size={26}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        component={ProfileStackScreen}
+        options={{
+          tabBarLabel: 'Profile',
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name="account-outline"
+              color={color}
+              size={26}
+            />
+          ),
+        }}
+      />
+    </Tab.Navigator>
+  );
+
   function MyTabs() {
     if (versionUpdate === false) {
       versionUpdateAlert();
       return;
     } else if (versionUpdate === true) {
       return (
-        <Tab.Navigator
-          initialRouteName="Home"
-          activeColor={'black'}
-          inactiveColor="grey"
-          barStyle={{ backgroundColor: colors.primary }}
-          sceneAnimationEnabled={false}>
-          <Tab.Screen
-            name="Home"
-            component={HomeStackScreen}
-            options={{
-              tabBarLabel: 'Home',
-              tabBarIcon: ({ color }) => (
-                <MaterialCommunityIcons
-                  name="home-outline"
-                  color={color}
-                  size={26}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="Search"
-            component={SearchStackScreen}
-            options={{
-              tabBarLabel: 'Search',
-              tabBarIcon: ({ color }) => (
-                <MaterialCommunityIcons
-                  name="magnify"
-                  color={color}
-                  size={26}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="Post"
-            component={PostStackScreen}
-            options={{
-              tabBarLabel: 'Post',
-              tabBarIcon: ({ color }) => (
-                <MaterialCommunityIcons
-                  name="plus-circle-outline"
-                  color={color}
-                  size={26}
-                />
-              ),
-            }}
-          />
-          <Tab.Screen
-            name="Chat"
-            component={ChatStackScreen}
-            options={{
-              tabBarLabel: 'Chat',
-              tabBarIcon: ({ color }) => (
-                <MaterialCommunityIcons
-                  name="message-outline"
-                  color={color}
-                  size={26}
-                />
-              ),
-            }}
-            listeners={tabBarListerners}
-          />
-          <Tab.Screen
-            name="Profile"
-            component={ProfileStackScreen}
-            options={{
-              tabBarLabel: 'Profile',
-              tabBarIcon: ({ color }) => (
-                <MaterialCommunityIcons
-                  name="account-outline"
-                  color={color}
-                  size={26}
-                />
-              ),
-            }}
-          />
-        </Tab.Navigator>
+        <>
+          {/* {isInitialScreen && (
+            <DoubleTapToClose message="Tap again to exit app" />
+          )} */}
+
+          <NavigationContainer
+            onStateChange={state => {
+              // console.log(state, 'state');
+              // if (!state) return;
+              // let route = state.routes[state.index];
+              // if (route.name === 'Home' || route.state?.index === 0) {
+              //   if (!isInitialScreen) {
+              //     setIsInitialScreen(state);
+              //   }
+              // } else if (isInitialScreen) setIsInitialScreen(false);
+            }}>
+            <Stack.Navigator headerMode="none" initialRouteName="BottomNav">
+              <Stack.Screen name="BottomNav" component={FooterNav} />
+              <Stack.Screen name="SkillGridView" component={SkillGridView} />
+              <Stack.Screen name="Notification" component={NotificationPage} />
+              <Stack.Screen name="NewChat" component={NewChat} />
+              <Stack.Screen name="GuestPage" component={GuestPage} />
+              <Stack.Screen name="Login" component={LoginPage} />
+              <Stack.Screen name="Signup" component={signupFormPage} />
+              <Stack.Screen name="SignupOtp" component={signupOtpPage} />
+              <Stack.Screen name="SignupDescPage" component={signupDescPage} />
+              <Stack.Screen name="ForgotPassword" component={forgotPassword} />
+              <Stack.Screen
+                name="ForgotPasswordOTP"
+                component={forgotPasswordOtpPage}
+              />
+              <Stack.Screen
+                name="ProfileSettings"
+                component={ProfileSettingsPage}
+              />
+              <Stack.Screen
+                name="RequestedCourses"
+                component={RequestedCoursesPage}
+              />
+              <Stack.Screen
+                name="WishlistCourses"
+                component={WishlistCoursesPage}
+              />
+              <Stack.Screen
+                name="PostedCourses"
+                component={PostedCoursesPage}
+              />
+              <Stack.Screen
+                name="ChangeProfile"
+                component={ChangeProfilePage}
+              />
+              <Stack.Screen name="ChatRoom" component={ChatRoom} />
+              <Stack.Screen name="Feedback" component={feedbackPage} />
+              <Stack.Screen name="PostPage" component={Post} />
+              <Stack.Screen name="SkillDetail" component={SkillDetail} />
+              <Stack.Screen
+                name="UserDetailsPage"
+                component={UserDetailsPage}
+              />
+              <Stack.Screen name="SkillListView" component={SkillListView} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </>
+
+        // <NavigationContainer>
+        //   <Tab.Navigator
+        //     initialRouteName="Home"
+        //     activeColor={'black'}
+        //     inactiveColor="grey"
+        //     barStyle={{
+        //       backgroundColor: colors.primary,
+        //       display: isTabVisible ? null : 'none',
+        //     }}
+        //     sceneAnimationEnabled={false}>
+        //     <Tab.Screen
+        //       name="Home"
+        //       component={HomeStackScreen}
+        //       options={{
+        //         tabBarLabel: 'Home',
+        //         tabBarIcon: ({ color }) => (
+        //           <MaterialCommunityIcons
+        //             name="home-outline"
+        //             color={color}
+        //             size={26}
+        //           />
+        //         ),
+        //       }}
+        //     />
+        //     <Tab.Screen
+        //       name="Search"
+        //       component={SearchStackScreen}
+        //       options={{
+        //         tabBarLabel: 'Search',
+        //         tabBarIcon: ({ color }) => (
+        //           <MaterialCommunityIcons
+        //             name="magnify"
+        //             color={color}
+        //             size={26}
+        //           />
+        //         ),
+        //       }}
+        //     />
+        //     <Tab.Screen
+        //       name="Post"
+        //       component={PostStackScreen}
+        //       options={{
+        //         tabBarLabel: 'Post',
+        //         tabBarIcon: ({ color }) => (
+        //           <MaterialCommunityIcons
+        //             name="plus-circle-outline"
+        //             color={color}
+        //             size={26}
+        //           />
+        //         ),
+        //       }}
+        //     />
+        //     <Tab.Screen
+        //       name="Chat"
+        //       component={ChatStackScreen}
+        //       options={{
+        //         tabBarLabel: 'Chat',
+        //         tabBarIcon: ({ color }) => (
+        //           <MaterialCommunityIcons
+        //             name="message-outline"
+        //             color={color}
+        //             size={26}
+        //           />
+        //         ),
+        //       }}
+        //       listeners={tabBarListerners}
+        //     />
+        //     <Tab.Screen
+        //       name="Profile"
+        //       component={ProfileStackScreen}
+        //       options={{
+        //         tabBarLabel: 'Profile',
+        //         tabBarIcon: ({ color }) => (
+        //           <MaterialCommunityIcons
+        //             name="account-outline"
+        //             color={color}
+        //             size={26}
+        //           />
+        //         ),
+        //       }}
+        //     />
+        //   </Tab.Navigator>
+        // </NavigationContainer>
       );
     } else return <></>;
   }
 
-  return <NavigationContainer>{MyTabs()}</NavigationContainer>;
+  return MyTabs();
 };
 
 export default withTheme(TabNavigation);

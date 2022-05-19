@@ -108,7 +108,9 @@ export class index extends Component {
       this.setState({ action: OutOnNext, animationFinished: false });
       if (animate) {
         setTimeout(() => {
-          this.setState({ currentStep: currentStep + 1 });
+          this.setState({
+            currentStep: currentStep + 1,
+          });
         }, duration);
       }
     } else {

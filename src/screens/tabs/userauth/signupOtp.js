@@ -111,11 +111,12 @@ export default function signupOtpPage({ navigation }) {
           onSuccess: data => {
             dispatch(loadUserInfo(data));
             storeAsyncData('userInfo', data);
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'SignupDescPage' }],
-            });
-            // navigation.navigate('Profile');
+            // navigation.reset({
+            //   index: 0,
+            //   routes: [{ name: 'SignupDescPage' }],
+            // });
+            // navigation.popToTop();
+            navigation.navigate('SignupDescPage');
           },
         }),
       );

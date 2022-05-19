@@ -117,6 +117,7 @@ export default function ChangeProfilePage({ navigation }) {
                 errors={errors.Description}
                 handleChange={handleChange}
                 setFieldTouched={setFieldTouched}
+                multiline={true}
               />
             </View>
             <Button

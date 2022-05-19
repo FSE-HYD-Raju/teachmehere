@@ -65,13 +65,16 @@ export default function LoginPage({ navigation }) {
           password: values.Password,
           onSuccess: () => {
             if (isPostQueryActive) {
+              // alert('Please wait...');
               navigation.navigate('PostPage');
             } else {
               console.log('suchiiiiii');
-              navigation.reset({
-                index: 0,
-                routes: [{ name: 'Profile' }],
-              });
+              navigation.goBack();
+              // navigation.reset({
+              //   index: 0,
+              //   routes: [{ name: 'BottomNav' }],
+              // });
+              // navigation.navigate('Profile');
             }
           },
         }),
