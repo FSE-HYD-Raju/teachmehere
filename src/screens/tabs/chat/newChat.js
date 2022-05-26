@@ -31,6 +31,11 @@ import {
   disableLoading,
   setNewChatList,
 } from '../../../redux/slices/chatSlice';
+import {
+  addToRequestedCoursesUrl,
+  newChatListByidUrl,
+  sendChatNotificationUrl,
+} from '../../../redux/urls';
 
 export default function NewChat({ navigation }) {
   // const [allUsers, setAllUsers] = useState([]);
@@ -47,7 +52,7 @@ export default function NewChat({ navigation }) {
 
   const getNewChatList = () => {
     setLoading(true);
-    fetch('https://teachmeproject.herokuapp.com/newChatListByid', {
+    fetch(newChatListByidUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -83,7 +88,7 @@ export default function NewChat({ navigation }) {
 
   // function sendRequest(item) {
   //     setLoading(true);
-  //     fetch('https://teachmeproject.herokuapp.com/addToRequestedCourses', {
+  // fetch(addToRequestedCoursesUrl, {
   //         method: 'POST',
   //         headers: {
   //             'Accept': 'application/json',
@@ -122,7 +127,7 @@ export default function NewChat({ navigation }) {
   // }
 
   // const sendNotification = (item, notifyobj) => {
-  //     fetch('https://teachmeproject.herokuapp.com/sendChatNotification', {
+  // fetch(sendChatNotificationUrl, {
   //         method: 'POST',
   //         headers: {
   //             'Accept': 'application/json',

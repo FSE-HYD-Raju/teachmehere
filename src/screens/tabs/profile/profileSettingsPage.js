@@ -18,6 +18,11 @@ import { loginSelector } from '../../../redux/slices/loginSlice';
 import { chatSelector } from '../../../redux/slices/chatSlice';
 import { searchSelector } from '../../../redux/slices/searchSlice';
 import { Snackbar } from 'react-native-paper';
+import { getAdmindataUrl } from '../../../redux/urls';
+import {
+  name as app_name,
+  version as app_version,
+} from '../../../../package.json';
 
 export default function ProfileSettingsPage({ navigation }) {
   const dispatch = useDispatch();
@@ -31,8 +36,8 @@ export default function ProfileSettingsPage({ navigation }) {
       const result = await Share.share({
         title: 'TAG Skills',
         message:
-          'Checkout this  app where you can share skills while earning money or learn from the professionals within your budget.  AppLink :https://play.google.com/store/apps/details?id=com.tagskills',
-        url: 'https://play.google.com/store/apps/details?id=com.tagskills',
+          'Checkout this  app where you can share skills while earning money or learn from the professionals within your budget.  AppLink :https://play.google.com/store/apps/details?id=com.teachmehere',
+        url: 'https://play.google.com/store/apps/details?id=com.teachmehere',
       });
       if (result.action === Share.sharedAction) {
         if (result.activityType) {
@@ -94,7 +99,7 @@ export default function ProfileSettingsPage({ navigation }) {
     const getAdminData = () => {
       if (userInfo._id) {
         setLoading(true);
-        fetch('https://teachmeproject.herokuapp.com/getAdmindata', {
+        fetch(getAdmindataUrl, {
           method: 'GET',
           headers: {
             Accept: 'application/json',
@@ -261,7 +266,7 @@ export default function ProfileSettingsPage({ navigation }) {
           <TouchableOpacity
             onPress={() =>
               Linking.openURL(
-                'https://play.google.com/store/apps/details?id=com.tagskills',
+                'https://play.google.com/store/apps/details?id=com.teachmehere',
               )
             }>
             <Surface style={styles.surface}>
@@ -292,7 +297,7 @@ export default function ProfileSettingsPage({ navigation }) {
               style={{ height: 50, width: 50 }}
             />
             <Text style={styles.accountsText}>Version</Text>
-            <Text style={{}}>1.0.0</Text>
+            <Text style={{}}>{app_version}</Text>
           </Surface>
         </View>
       </View>

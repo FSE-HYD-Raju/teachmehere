@@ -113,6 +113,9 @@ export default function LoginPage({ navigation }) {
                 errorMessage={loginEmailError}
                 value={values.Email}
                 onChangeText={e => {
+                  console.log(e);
+                  e = e.replace(/^\s+|\s+$/gm, '');
+                  console.log(e);
                   handleChange('Email')(e);
                   dispatch(clearErrors());
                 }}
@@ -150,6 +153,7 @@ export default function LoginPage({ navigation }) {
                 containerStyle={{ width: 310 }}
                 leftIconContainerStyle={{ paddingRight: 15 }}
                 onChangeText={e => {
+                  e = e.replace(/^\s+|\s+$/gm, '');
                   handleChange('Password')(e);
                   dispatch(clearErrors());
                 }}

@@ -37,6 +37,15 @@ import PageSpinner from '../components/common/PageSpinner';
 import firestore from '@react-native-firebase/firestore';
 import { DataTable } from 'react-native-paper';
 import moment from 'moment';
+import {
+  addToRequestedCoursesUrl,
+  addUserRatingUrl,
+  getUserRatingByIdUrl,
+  requestedCoursesByidUrl,
+  sendChatNotificationUrl,
+  updateSkillUrl,
+  updateUserRatingUrl,
+} from '../redux/urls';
 
 const { labelColor, buttonColor } = random_rgba();
 
@@ -101,7 +110,7 @@ export default function SkillDetail({ route, navigation }) {
     setLoading(true);
     setAreConnected(false);
     setRequestSent(false);
-    fetch('https://teachmeproject.herokuapp.com/requestedCoursesByid', {
+    fetch(requestedCoursesByidUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -153,7 +162,7 @@ export default function SkillDetail({ route, navigation }) {
 
   const getUserRating = uid => {
     setRatingLoading(true);
-    fetch('https://teachmeproject.herokuapp.com/getUserRatingById', {
+    fetch(getUserRatingByIdUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -225,9 +234,9 @@ export default function SkillDetail({ route, navigation }) {
   };
 
   const setRating = rating => {
-    let url = 'https://teachmeproject.herokuapp.com/addUserRating';
+    let url = addUserRatingUrl;
     if (userRating) {
-      url = 'https://teachmeproject.herokuapp.com/updateUserRating';
+      url = updateUserRatingUrl;
     }
     fetch(url, {
       method: 'POST',
@@ -252,7 +261,7 @@ export default function SkillDetail({ route, navigation }) {
 
   const deleteSkill = () => {
     setDeleteLoading(true);
-    fetch('https://teachmeproject.herokuapp.com/updateCourseDetails', {
+    fetch(updateSkillUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -295,8 +304,8 @@ export default function SkillDetail({ route, navigation }) {
             ' for just ' +
             skill.currency +
             skill.price.oneonone +
-            ' in TAG Skills App, Check it out! AppLink :https://play.google.com/store/apps/details?id=com.tagskills',
-          url: 'https://play.google.com/store/apps/details?id=com.tagskills',
+            ' in TAG Skills App, Check it out! AppLink :https://play.google.com/store/apps/details?id=com.teachmehere',
+          url: 'https://play.google.com/store/apps/details?id=com.teachmehere',
         });
         if (result.action === Share.sharedAction) {
           if (result.activityType) {
@@ -597,7 +606,7 @@ export default function SkillDetail({ route, navigation }) {
 
     const sendRequest = skill => {
       setLoading(true);
-      fetch('https://teachmeproject.herokuapp.com/addToRequestedCourses', {
+      fetch(addToRequestedCoursesUrl, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
@@ -652,7 +661,7 @@ export default function SkillDetail({ route, navigation }) {
     };
 
     const sendNotification = (skill, notifyobj) => {
-      fetch('https://teachmeproject.herokuapp.com/sendChatNotification', {
+      fetch(sendChatNotificationUrl, {
         method: 'POST',
         headers: {
           Accept: 'application/json',

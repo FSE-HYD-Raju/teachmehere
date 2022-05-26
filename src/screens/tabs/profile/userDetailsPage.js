@@ -12,6 +12,7 @@ import Icons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Avatar, Rating } from 'react-native-elements';
 import { useDispatch } from 'react-redux';
 import CourseListCard from '../../../components/common/CourseListCard';
+import { getCourseDetailsByIdUrl } from '../../../redux/urls';
 
 export default function UserDetailsPage({ route, navigation }) {
   const { userinfo } = route.params;
@@ -24,12 +25,12 @@ export default function UserDetailsPage({ route, navigation }) {
   }, []);
 
   const getPostedCourses = uid => {
-    if(!uid) {
+    if (!uid) {
       setLoading(false);
       return;
     }
     setLoading(true);
-    fetch('https://teachmeproject.herokuapp.com/getCourseDetailsById', {
+    fetch(getCourseDetailsByIdUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

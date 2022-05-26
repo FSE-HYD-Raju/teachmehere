@@ -11,7 +11,7 @@ import firestore from '@react-native-firebase/firestore';
 export const initialState = {
   chatResults: [],
   searchChatResults: [],
-  loading: true,
+  loading: false,
   hasErrors: false,
   newChatList: [],
   currentOpenedChat: {},
@@ -19,6 +19,7 @@ export const initialState = {
   unsubscribeSnapshot: null,
   hasUnreadMsgs: false,
   notificationsubscribe: null,
+  chatPageOpened: false,
 };
 
 const chatSlice = createSlice({
@@ -73,6 +74,9 @@ const chatSlice = createSlice({
     setNotificationSubscribe: (state, { payload }) => {
       state.notificationsubscribe = payload;
     },
+    setChatPageOpened: (state, { payload }) => {
+      state.chatPageOpened = payload;
+    },
   },
 });
 
@@ -89,6 +93,7 @@ export const {
   setUnsubscribeSnapshot,
   setHasUnreadMsgs,
   setNotificationSubscribe,
+  setChatPageOpened,
 } = chatSlice.actions;
 
 export const chatSelector = state => state.chat;
@@ -98,23 +103,26 @@ export function fetchChats(userInfo) {
   return async (dispatch, getState) => {
     if (getState().chat.getChatsEventCalled) return;
     dispatch(getChats());
+    console.log(userInfo._id);
     try {
       // let unsubscribeSnapshot =
       firestore()
         .collection('THREADS')
         .where('ids', 'array-contains', userInfo._id)
         // .where("deletedids", "array-contains", userInfo._id)
-        .orderBy('latestMessage.createdAt', 'desc')
+        // .orderBy('latestMessage.createdAt', 'desc')
         .onSnapshot(querySnapshot => {
           // alert('onSnapshot');
           var res = [];
+          console.log('sdfasnquerySnapshot');
           if (querySnapshot) {
-            // alert('querySnapshot');
+            console.log('querySnapshot', querySnapshot);
             dispatch(setHasUnreadMsgs(false));
             for (var i in querySnapshot.docs) {
               const documentSnapshot = querySnapshot.docs[i];
               // res = querySnapshot.docs.map(documentSnapshot => {
               data = documentSnapshot.data();
+              // alert(JSON.stringify(data));
               console.log('tagg', data);
               senderDetails = data.userDetails.find(o => o.id != userInfo._id);
               didBlock =
@@ -152,6 +160,9 @@ export function fetchChats(userInfo) {
             }
           }
           console.log('res0', res);
+          res.sort(function(a, b) {
+            return b.latestMessage.createdAt - a.latestMessage.createdAt;
+          });
           // console.log(JSON.stringify(res))
           dispatch(getChatsSuccess(res));
         });

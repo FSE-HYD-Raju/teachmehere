@@ -17,6 +17,7 @@ import {
   setRequestedSkills,
 } from '../../../redux/slices/profileSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { requestedCoursesByidUrl } from '../../../redux/urls';
 
 export default function RequestedCoursesPage({ navigation }) {
   const { userInfo } = useSelector(loginSelector);
@@ -30,7 +31,7 @@ export default function RequestedCoursesPage({ navigation }) {
 
   const getRequetedCourses = uid => {
     setLoading(true);
-    fetch('https://teachmeproject.herokuapp.com/requestedCoursesByid', {
+    fetch(requestedCoursesByidUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -94,7 +95,7 @@ export default function RequestedCoursesPage({ navigation }) {
               />
             }
             style={{
-              marginBottom: 30
+              marginBottom: 30,
             }}
           />
         </View>
@@ -165,8 +166,8 @@ export default function RequestedCoursesPage({ navigation }) {
       {loading
         ? loadingComponent()
         : requestedSkills.length
-          ? cardListComponent()
-          : noDataFoundComponent()}
+        ? cardListComponent()
+        : noDataFoundComponent()}
     </View>
   );
 }

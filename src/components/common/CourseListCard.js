@@ -19,6 +19,7 @@ import {
   setReqCount,
 } from '../../redux/slices/loginSlice';
 import { setRequestedSkills } from '../../redux/slices/profileSlice';
+import { removeFromRequestedCoursesUrl } from '../../redux/urls';
 
 export default function CourseListCard({
   course,
@@ -56,7 +57,7 @@ export default function CourseListCard({
 
   const deleteSkill = () => {
     setLoading(true);
-    fetch('https://teachmeproject.herokuapp.com/removeFromRequestedCourses', {
+    fetch(removeFromRequestedCoursesUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

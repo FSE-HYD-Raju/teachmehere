@@ -5,7 +5,7 @@ import {
   storeAsyncData,
   clearAsyncData,
 } from '../../components/common/asyncStorage';
-import { clearData } from '../slices/chatSlice'
+import { clearData } from '../slices/chatSlice';
 
 export const initialState = {
   profileLoading: false,
@@ -35,6 +35,7 @@ const loginSlice = createSlice({
       state.loginEmail = payload;
     },
     loginSuccess: (state, { payload }) => {
+      console.log('loginSuccess payload', payload);
       state.userInfo = payload;
       state.profileLoading = false;
       state.loginEmailError = '';
@@ -46,6 +47,7 @@ const loginSlice = createSlice({
       state.loginError = '';
     },
     loadUserInfo: (state, { payload }) => {
+      console.log('loadUserInfo payload', payload);
       state.userInfo = payload;
     },
     loginPasswordChanged: (state, { payload }) => {
@@ -160,10 +162,10 @@ export function logOutUser(param) {
       clearAsyncData();
       // chatlist = getState().chat.unsubscribeSnapshot
       // chatlist && chatlist()
-      dispatch(clearData())
+      dispatch(clearData());
       dispatch(logoutSuccess());
       axios.post(logoutUrl, {
-        _id: param.uid
+        _id: param.uid,
       });
     }, 50);
   };

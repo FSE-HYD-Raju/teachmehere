@@ -27,7 +27,10 @@ import {
   setLoading,
   setCurrentOpenedChat,
   fetchChats,
+  setChatPageOpened,
 } from '../../../redux/slices/chatSlice';
+import { sendChatNotificationUrl } from '../../../redux/urls';
+import PushNotification from 'react-native-push-notification';
 
 export default function ChatRoom({ route, navigation }) {
   console.log('in chatroom ');
@@ -43,6 +46,7 @@ export default function ChatRoom({ route, navigation }) {
 
   const [thread, setThread] = useState(route.params?.thread || {});
   console.log('thread', thread);
+  const isSupport = !!route.params?.thread?.support;
   const [newChat, setNewChat] = useState(thread.newChat);
   const [fetchedChatData, setFetchedChatData] = useState(false);
   const [senderObj, setSenderObj] = useState(
@@ -81,21 +85,22 @@ export default function ChatRoom({ route, navigation }) {
         // alert(JSON.stringify(currentChat[0].blockedIds));
 
         checkBlockedChat(currentChat[0]);
+        // setFetchedChatData(true);
+        const senderInfo = currentChat[0].userDetails.find(
+          o => o.id != userInfo._id,
+        );
+        setSenderObj({
+          ...senderObj,
+          displaypic: senderInfo.displaypic,
+        });
       }
-      // setFetchedChatData(true);
-      const senderInfo = currentChat[0].userDetails.find(
-        o => o.id != userInfo._id,
-      );
-      setSenderObj({
-        ...senderObj,
-        displaypic: senderInfo.displaypic,
-      });
     }
 
     console.log(chatResults, 'chatResults');
   }, [chatResults]);
 
   useEffect(() => {
+    dispatch(setChatPageOpened(true));
     if (thread.fromNotification && !getChatsEventCalled) {
       dispatch(fetchChats(userInfo));
     }
@@ -112,6 +117,7 @@ export default function ChatRoom({ route, navigation }) {
     // dispatch(setLoading(false));
     // Stop listening for updates whenever the component unmounts
     return () => {
+      dispatch(setChatPageOpened(false));
       console.log('unmounting');
       backhandler.remove();
       messagesListener();
@@ -122,7 +128,7 @@ export default function ChatRoom({ route, navigation }) {
       // threadListener();
       // dispatch(setCurrentOpenedChat({}))
     };
-  }, [messages]);
+  }, []);
 
   const checkToRemoveChat = () => {
     if (newChat && (!messages || !messages.length)) {
@@ -173,6 +179,9 @@ export default function ChatRoom({ route, navigation }) {
 
           console.log(firebaseData.deletedIds);
           console.log(userInfo._id);
+          // PushNotification.cancelLocalNotification({
+          //   id: firebaseData?.sentTime,
+          // });
 
           if (
             !firebaseData.deletedIds ||
@@ -338,7 +347,7 @@ export default function ChatRoom({ route, navigation }) {
       },
       deletedIds: [], //firestore.FieldValue.arrayRemove(userInfo._id),
       newChat: false,
-      support: !!thread.support,
+      support: isSupport,
       // displaypic: userInfo.displaypic
     };
 
@@ -387,7 +396,7 @@ export default function ChatRoom({ route, navigation }) {
     dataobj.userDetails = JSON.parse(JSON.stringify(temp));
     console.log('dataobj');
     console.log(dataobj);
-    fetch('https://teachmeproject.herokuapp.com/sendChatNotification', {
+    fetch(sendChatNotificationUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -744,7 +753,7 @@ export default function ChatRoom({ route, navigation }) {
   };
 
   const goToProfile = thread => {
-    if (!thread.support) {
+    if (!isSupport) {
       navigation.navigate('UserDetailsPage', {
         userinfo: {
           ...thread,
@@ -806,12 +815,12 @@ export default function ChatRoom({ route, navigation }) {
             }
             destructiveIndex={1}
             options={
-              !thread.support
+              !isSupport
                 ? ['Delete Chat', didBlock ? 'Unblock' : 'Block']
                 : ['Delete Chat']
             }
             actions={
-              !thread.support
+              !isSupport
                 ? [deleteChat, didBlock ? unblockUser : blockUser]
                 : [deleteChat]
             }
@@ -842,7 +851,6 @@ export default function ChatRoom({ route, navigation }) {
           // renderAvatar={null}
           renderSend={renderSend}
           renderTime={renderTime}
-          renderMessage={renderMessage}
           scrollToBottomComponent={scrollToBottomComponent}
           // renderSystemMessage={renderSystemMessage}
           showAvatarForEveryMessage={false}

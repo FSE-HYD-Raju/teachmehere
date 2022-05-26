@@ -1,5 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { getReqFavPostedCountsUrl } from '../urls';
 import { setReqFavPostedCount } from './loginSlice';
 
 export const initialState = {
@@ -41,12 +42,9 @@ export const profileSelector = state => state.profile;
 export function fetchReqFavpostedCounts(param) {
   return async (dispatch, state) => {
     try {
-      const response = await axios.post(
-        'https://teachmeproject.herokuapp.com/getReqFavPostedCounts',
-        {
-          uid: param.uid,
-        },
-      );
+      const response = await axios.post(getReqFavPostedCountsUrl, {
+        uid: param.uid,
+      });
       console.log('asdfasf', response.data);
       if (response && response.data && response.data.length)
         dispatch(setReqFavPostedCount(response.data[0]));

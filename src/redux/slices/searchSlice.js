@@ -95,9 +95,7 @@ export function fetchTopCategories() {
   return async dispatch => {
     dispatch(getTopCategories());
     try {
-      const response = await axios.get(
-        'https://teachmeproject.herokuapp.com/getTopCategories',
-      );
+      const response = await axios.get(topCategoriesUrl);
       if (response) {
         dispatch(getTopCategoriesSuccess(response.data));
       }

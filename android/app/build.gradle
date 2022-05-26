@@ -142,8 +142,8 @@ android {
         applicationId "com.teachmehere"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 10200
-        versionName "1.2.0"
+        versionCode 10700
+        versionName "1.7.0"
         multiDexEnabled true
     }
     splits {

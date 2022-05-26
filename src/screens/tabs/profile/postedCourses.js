@@ -17,6 +17,7 @@ import {
   setPostedSkills,
 } from '../../../redux/slices/profileSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { getCourseDetailsByIdUrl } from '../../../redux/urls';
 
 export default function PostedCoursesPage({ navigation }) {
   const { userInfo } = useSelector(loginSelector);
@@ -30,7 +31,7 @@ export default function PostedCoursesPage({ navigation }) {
 
   const getPostedCourses = uid => {
     setLoading(true);
-    fetch('https://teachmeproject.herokuapp.com/getCourseDetailsById', {
+    fetch(getCourseDetailsByIdUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

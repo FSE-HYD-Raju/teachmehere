@@ -25,6 +25,10 @@ import { updateHomeSkillsData } from '../../redux/slices/homeSlice';
 import { Chip, ActivityIndicator } from 'react-native-paper';
 import IconMaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { homeSelector } from '../../redux/slices/homeSlice';
+import {
+  getCourseDetailsByCategoryUrl,
+  loadMoreDataForCategoryUrl,
+} from '../../redux/urls';
 
 const screenWidth = Dimensions.get('screen').width;
 
@@ -84,7 +88,7 @@ export default function SkillListView({ route, navigation }) {
     } else {
       setMoreDataLoading(true);
     }
-    fetch('https://teachmeproject.herokuapp.com/getCourseDetailsByCategory', {
+    fetch(getCourseDetailsByCategoryUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -193,7 +197,7 @@ export default function SkillListView({ route, navigation }) {
                     }
                     onPress={() => subCategoryClicked(item.name)}
                     selected={subCatSelected.indexOf(item.name) > -1}
-                  // selectedColor="green"
+                    // selectedColor="green"
                   >
                     {item.name}
                   </Chip>
@@ -225,7 +229,7 @@ export default function SkillListView({ route, navigation }) {
       return;
     }
     setMoreDataLoading(true);
-    fetch('https://teachmeproject.herokuapp.com/loadMoreDataForCategory', {
+    fetch(loadMoreDataForCategoryUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

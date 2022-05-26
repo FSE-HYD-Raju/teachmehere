@@ -46,6 +46,9 @@ import feedbackPage from './screens/tabs/profile/feedbackPage';
 import UserDetailsPage from './screens/tabs/profile/userDetailsPage';
 import { Alert, Linking } from 'react-native';
 import DoubleTapToClose from './components/common/DoubleTapToClose';
+import { checkVersionUrl } from './redux/urls';
+import { name as app_name, version as app_version } from '../package.json';
+import { fetchNotifications } from './redux/slices/notificationSlice';
 
 const isCurrentScreenInitialOne = state => {
   const route = state.routes[state.index];
@@ -69,8 +72,16 @@ const TabNavigation = props => {
   const [isInitialScreen, setIsInitialScreen] = useState(false);
 
   useEffect(() => {
-    checkVersion('2.1.1');
+    checkVersion(app_version);
   }, []);
+
+  useEffect(() => {
+    console.log(userInfo, 'userInfo');
+
+    if (userInfo._id) {
+      dispatch(fetchNotifications(userInfo));
+    }
+  }, [userInfo]);
 
   useEffect(() => {
     if (versionUpdate === true) {
@@ -79,6 +90,8 @@ const TabNavigation = props => {
   }, [versionUpdate]);
 
   const loadInitialData = () => {
+    console.log('from tabnavigarion.js loadInitialData');
+
     getUserInfo();
     searchInitialData();
     checkPermission();
@@ -209,7 +222,7 @@ const TabNavigation = props => {
   }
 
   const checkVersion = async verison => {
-    await fetch('https://teachmeproject.herokuapp.com/checkVersion', {
+    await fetch(checkVersionUrl, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -240,7 +253,7 @@ const TabNavigation = props => {
           text: 'Update',
           onPress: () =>
             Linking.openURL(
-              'https://play.google.com/store/apps/details?id=com.TAGIdeas.BMB',
+              'https://play.google.com/store/apps/details?id=com.teachmehere',
             ),
         },
       ],

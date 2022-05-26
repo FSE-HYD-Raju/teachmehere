@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "615723798966",
+    "project_id": "tagskills-b9a74",
+    "storage_bucket": "tagskills-b9a74.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:615723798966:android:97b21fca401d30a28d7117",
+        "android_client_info": {
+          "package_name": "com.teachmehere"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "615723798966-ub67ar864glrdi0p8ujkr8g9rh23a85g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDpdbinRbAwVh2ewZDVDabR1t6TmeXEVQs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "615723798966-ub67ar864glrdi0p8ujkr8g9rh23a85g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
