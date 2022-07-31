@@ -67,12 +67,9 @@ export default function CourseCard({
           </Text>
           {!!course && !!course.courselevel && (
             <Text
-              style={[
-                styles.position,
-                { width: 135, fontSize: 13, marginTop: 4 },
-              ]}
+              style={[styles.position, { fontSize: 13, marginTop: 4 }]}
               numberOfLines={1}>
-              Level - {course.courselevel}
+              {course.courselevel} Level
             </Text>
           )}
           <View style={{ marginTop: 10, width: 110 }}>

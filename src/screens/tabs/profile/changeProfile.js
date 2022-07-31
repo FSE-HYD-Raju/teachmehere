@@ -152,6 +152,7 @@ export default function ChangeProfilePage({ navigation }) {
           onBlur={() => props.setFieldTouched(props.fieldName)}
           secureTextEntry={props.secureTextEntry ? props.secureTextEntry : null}
           rightIcon={props.rightIcon ? props.rightIcon : null}
+          multiline={props.multiline ? props.multiline : null}
         />
 
         {props.touched && props.errors && (

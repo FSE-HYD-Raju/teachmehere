@@ -78,9 +78,9 @@ const TabNavigation = props => {
   useEffect(() => {
     console.log(userInfo, 'userInfo');
 
-    if (userInfo._id) {
-      dispatch(fetchNotifications(userInfo));
-    }
+    // if (userInfo._id) {
+    //   dispatch(fetchNotifications(userInfo));
+    // }
   }, [userInfo]);
 
   useEffect(() => {

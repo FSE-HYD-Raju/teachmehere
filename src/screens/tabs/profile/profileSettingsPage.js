@@ -204,6 +204,7 @@ export default function ProfileSettingsPage({ navigation }) {
               'Hi, Please let us know your concern, We will get back to you as soon as possible.',
             createdAt: Date.now(),
             system: true,
+            serverTime: new Date().getTime(),
           })
           .then(() => {});
       });

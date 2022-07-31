@@ -693,7 +693,7 @@ export default function FilterPage({
 
         {democomponent()}
 
-        {currentAvailableComponent()}
+        {/* {currentAvailableComponent()} */}
 
         {minimumRatingComponent()}
 

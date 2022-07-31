@@ -193,9 +193,9 @@ export default function SkillDetail({ route, navigation }) {
       <Snackbar
         visible={!!visibleSnackbar}
         onDismiss={() => setVisibleSnackbar('')}
-        duration={2000}
+        duration={3000}
         action={{
-          label: 'Dismiss',
+          label: 'X',
           onPress: () => {
             setVisibleSnackbar('');
           },
@@ -487,10 +487,8 @@ export default function SkillDetail({ route, navigation }) {
     // console.log(userInfo._id);
     // console.log(skill);
 
-    const showEdit =
-      userInfo._id && userInfo._id == skill.uid && origin == 'posted';
-    const showDelete =
-      userInfo._id && userInfo._id === skill.uid && origin == 'posted';
+    const showEdit = userInfo._id && userInfo._id == skill.uid;
+    const showDelete = userInfo._id && userInfo._id === skill.uid;
 
     return (
       <View>
@@ -624,6 +622,9 @@ export default function SkillDetail({ route, navigation }) {
           if (!requestSent) {
             addFirebaseNotification(skill);
           }
+          setVisibleSnackbar(
+            `You will get notified once ${skill.username} accepts the request!`,
+          );
         })
         .catch(error => {
           setVisibleSnackbar('Something went wrong!');
@@ -829,7 +830,7 @@ export default function SkillDetail({ route, navigation }) {
           color={'black'}
           labelStyle={globalStyles.btnLabelStyle}
           onPress={requestBtn}>
-          <Text>Interested To Learn</Text>
+          <Text>Connect</Text>
         </Button>
       );
     }

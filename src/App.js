@@ -23,7 +23,9 @@ const theme = {
 };
 const App = () => {
   useEffect(() => {
-    SplashScreen.hide();
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 1000);
   }, []);
   console.disableYellowBox = true;
   window.console = console;

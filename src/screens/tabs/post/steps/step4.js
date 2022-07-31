@@ -125,7 +125,7 @@ const Step4 = props => {
                 <TextInput
                   placeholder={'user ID'}
                   placeholderTextColor={'#777'}
-                  style={{ marginLeft: 15 }}
+                  style={{ marginLeft: 3 }}
                   onChangeText={formProps.handleChange('linkedInProfile')}
                   value={formProps.values.linkedInProfile}
                 />

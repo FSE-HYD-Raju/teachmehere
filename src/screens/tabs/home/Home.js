@@ -38,15 +38,25 @@ import {
   fetchPostedSkills,
 } from '../../../redux/slices/homeSlice';
 import DoubleTapToClose from '../../../components/common/DoubleTapToClose';
+import {
+  fetchNotifications,
+  notificationSelector,
+} from '../../../redux/slices/notificationSlice';
 
 export default function Home(props) {
   const { homeData, loading, homeSkillsData } = useSelector(homeSelector);
-  const { currentOpenedChat, notificationsubscribe } = useSelector(
-    chatSelector,
-  );
+  const {
+    currentOpenedChat,
+    notificationsubscribe,
+    chatPageOpened,
+  } = useSelector(chatSelector);
   let currOpenedChat = currentOpenedChat;
   console.log(currentOpenedChat._id, 'dasfas');
+  console.log(chatPageOpened, 'dasfas chatPageOpened');
+
   const { userInfo } = useSelector(loginSelector);
+  const { unreadNotification } = useSelector(notificationSelector);
+
   const carouselRef = useRef(null);
   const [screenWidth, setScreenWidth] = useState(
     Dimensions.get('window').width,
@@ -88,18 +98,26 @@ export default function Home(props) {
   }, [userInfo]);
 
   // useEffect(() => {
-  //   currOpenedChat = currentOpenedChat
-  //   if (notificunsubscribe) {
-  //     alert('asdf')
+  //   currOpenedChat = currentOpenedChat;
+  //   if (chatPageOpened && notificunsubscribe && notificationsubscribe) {
   //     notificunsubscribe();
+  //     notificunsubscribe = null;
+  //     dispatch(setNotificationSubscribe(false));
+  //   } else if (
+  //     !chatPageOpened &&
+  //     !notificationsubscribe &&
+  //     !notificunsubscribe
+  //   ) {
+  //     appOpenedNotificationListener();
+  //     dispatch(setNotificationSubscribe(true));
   //   }
-  //   appOpenedNotificationListener();
-  // }, [currentOpenedChat])
+  // }, [chatPageOpened]);
 
   const notificationListener = async () => {
     PushNotification.configure({
       onNotification: function(notification) {
         console.log('notificationListener');
+        console.log('notificationListener', notification);
 
         if (
           focusNotiMsg &&
@@ -160,15 +178,17 @@ export default function Home(props) {
   const appOpenedNotificationListener = () => {
     notificunsubscribe = messaging().onMessage(async remoteMessage => {
       console.log('noti');
+      console.log(chatPageOpened, 'chatPageOpened');
       console.log(remoteMessage);
-      console.log(getCur());
-      // alert('hrfj')
+      console.log(currentOpenedChat._id, 'currentOpenedChat');
+
+      // alert('sas');
       console.log(currOpenedChat._id);
-      console.log(JSON.parse(remoteMessage.data.data)._id);
-      console.log(remoteMessage.data.data);
+      // // console.log(JSON.parse(remoteMessage.data.data)._id);
+      // console.log(remoteMessage.data.data);
 
       let remoteData = JSON.parse(remoteMessage?.data?.data)?._id || '';
-      // alert(remoteData)
+      console.log(remoteData, 'remoteData');
 
       focusNotiMsg = remoteMessage;
       if (remoteMessage.messageId !== lastMessageId) {
@@ -185,11 +205,14 @@ export default function Home(props) {
           vibration: 300,
           playSound: true,
           soundName: 'default',
-          id: JSON.stringify(id),
-          // userInfo: { id: '123' }
+          // id: JSON.stringify(remoteMessag?.sentTime),
+          // userInfo: { id: JSON.stringify(remoteMessag?.sentTime) },
         });
       }
-      PushNotification.cancelLocalNotification({ id: id });
+      // if (chatPageOpened) {
+      //   PushNotification.cancelLocalNotification({ id: id });
+      // }
+      // PushNotification.cancelLocalNotification({ id: id });
 
       // alert('A new FCM message arrived!' + JSON.stringify(remoteMessage));
     });
@@ -212,12 +235,27 @@ export default function Home(props) {
             style={{ height: 50, width: 160, flex: 0.8, resizeMode: 'contain' }}
           />
         </View>
-        <Icons
-          style={{ marginTop: 0 }}
-          name={'bell-outline'}
-          size={27}
-          onPress={() => props.navigation.navigate('Notification')}
-        />
+        <View style={{ position: 'relative' }}>
+          <Icons
+            style={{ marginTop: 0 }}
+            name={'bell-outline'}
+            size={27}
+            onPress={() => props.navigation.navigate('Notification')}
+          />
+          {/* {!!unreadNotification && (
+            <View
+              style={{
+                position: 'absolute',
+                backgroundColor: 'red',
+                width: 10,
+                height: 10,
+                borderRadius: 20,
+                marginLeft: 14,
+                marginTop: 2,
+              }}
+            />
+          )} */}
+        </View>
       </View>
     );
   };
@@ -378,6 +416,7 @@ export default function Home(props) {
   };
 
   const loadInitialData = () => {
+    console.log('from home.js loadInitialData');
     getUserInfo();
     searchInitialData();
     checkPermission();
@@ -387,6 +426,7 @@ export default function Home(props) {
     dispatch(getRecentSearches());
     dispatch(fetchInitialDataWhenAppLoading());
     dispatch(fetchPostedSkills());
+    // if (userInfo._id) dispatch(fetchNotifications(userInfo));
   };
 
   const getUserInfo = async () => {

@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import {
   GiftedChat,
   Bubble,
@@ -14,6 +14,7 @@ import {
   TextInput,
   ActivityIndicator,
   Colors,
+  Snackbar,
 } from 'react-native-paper';
 import { Avatar } from 'react-native-elements';
 import firestore from '@react-native-firebase/firestore';
@@ -29,7 +30,10 @@ import {
   fetchChats,
   setChatPageOpened,
 } from '../../../redux/slices/chatSlice';
-import { sendChatNotificationUrl } from '../../../redux/urls';
+import {
+  sendChatNotificationUrl,
+  submitfeedbackUrl,
+} from '../../../redux/urls';
 import PushNotification from 'react-native-push-notification';
 
 export default function ChatRoom({ route, navigation }) {
@@ -38,7 +42,7 @@ export default function ChatRoom({ route, navigation }) {
   const [messages, setMessages] = useState([]);
   const [didBlock, setDidBlock] = useState(false);
   const [gotBlocked, setGotBlocked] = useState(false);
-
+  const [visibleSnackbar, setVisibleSnackbar] = useState(false);
   const { chatResults, getChatsEventCalled, loading } = useSelector(
     chatSelector,
   );
@@ -56,8 +60,12 @@ export default function ChatRoom({ route, navigation }) {
     }),
   );
 
+  var isChatDeleted = false;
+
   console.log('senderObj', senderObj);
 
+  const stateRef = useRef();
+  stateRef.current = newChat;
   const backButtonHandler = () => {
     return BackHandler.addEventListener('hardwareBackPress', () => {
       checkToRemoveChat();
@@ -100,11 +108,9 @@ export default function ChatRoom({ route, navigation }) {
   }, [chatResults]);
 
   useEffect(() => {
-    dispatch(setChatPageOpened(true));
     if (thread.fromNotification && !getChatsEventCalled) {
       dispatch(fetchChats(userInfo));
     }
-    dispatch(setCurrentOpenedChat(thread));
 
     console.log('in useeffect ', messages);
 
@@ -122,7 +128,9 @@ export default function ChatRoom({ route, navigation }) {
       backhandler.remove();
       messagesListener();
       // chatResults.map(data => {
-      markMessagesRead(thread);
+      if (!isChatDeleted) {
+        markMessagesRead(thread);
+      }
       // });
 
       // threadListener();
@@ -130,27 +138,47 @@ export default function ChatRoom({ route, navigation }) {
     };
   }, []);
 
-  const checkToRemoveChat = () => {
-    if (newChat && (!messages || !messages.length)) {
-      console.log('in checkToRemoveChat If', newChat);
-      console.log('in  checkToRemoveChat if', messages);
+  useEffect(() => {
+    setTimeout(() => {
+      PushNotification.cancelAllLocalNotifications();
+    }, 3000);
+  }, [messages]);
 
-      firestore()
+  const checkToRemoveChat = () => {
+    if (stateRef.current && (!messages || !messages.length)) {
+      console.log('in checkToRemoveChat If', stateRef.current);
+      console.log('in  checkToRemoveChat if', messages);
+      // if (isSupport) {
+      var colRef = firestore()
         .collection('THREADS')
         .doc(thread._id)
-        .delete()
-        .then(() => {
-          if (navigation.canGoBack())
-            // setTimeout(() => {
-            navigation.goBack();
-          // navigation.navigate('Chat', { screen: 'ChatPage' });
-          // }, 100);
-          else
-            navigation.reset({
-              index: 0,
-              routes: [{ name: 'BottomNav' }],
+        .collection('MESSAGES');
+
+      colRef.get().then(querySnapshot => {
+        Promise.all(querySnapshot.docs.map(d => d.ref.delete())).then(() => {
+          firestore()
+            .collection('THREADS')
+            .doc(thread._id)
+            .delete()
+            .then(() => {
+              isChatDeleted = true;
+              if (navigation.canGoBack())
+                // setTimeout(() => {
+                navigation.goBack();
+              // navigation.navigate('Chat', { screen: 'ChatPage' });
+              // }, 100);
+              else
+                navigation.reset({
+                  index: 0,
+                  routes: [{ name: 'BottomNav' }],
+                });
+            })
+            .catch(error => {
+              console.log('error', error);
             });
         });
+      });
+      return;
     } else if (navigation.canGoBack()) {
       navigation.goBack();
       // navigation.navigate('Chat', { screen: 'ChatPage' });
@@ -175,7 +203,7 @@ export default function ChatRoom({ route, navigation }) {
           const doc = querySnapshot.docs[i];
           // const messagesArr = querySnapshot.docs.filter(doc => {
           const firebaseData = doc.data();
-          console.log('getejlkj');
+          console.log('getejlkj', firebaseData);
 
           console.log(firebaseData.deletedIds);
           console.log(userInfo._id);
@@ -259,6 +287,7 @@ export default function ChatRoom({ route, navigation }) {
   const markMessagesRead = async data => {
     console.log('data', data);
     if (
+      !isChatDeleted &&
       data &&
       data.latestMessage &&
       data.latestMessage.senderId !== userInfo._id
@@ -308,6 +337,7 @@ export default function ChatRoom({ route, navigation }) {
 
   const updateMessage = async text => {
     console.log('updateMessage', JSON.stringify(thread));
+    setNewChat(false);
 
     var msgObj = {
       text: text,
@@ -368,7 +398,6 @@ export default function ChatRoom({ route, navigation }) {
       .collection('THREADS')
       .doc(thread._id)
       .set(updateObj, { merge: true });
-    setNewChat(false);
     if (!gotBlocked) sendNotification(text);
   };
 
@@ -416,6 +445,29 @@ export default function ChatRoom({ route, navigation }) {
       .catch(error => {
         console.error(error);
       });
+
+    if (isSupport) {
+      let obj = {
+        username: userInfo.username,
+        userid: userInfo._id,
+        feedbackrating: 'SUPPORT',
+        description: text,
+      };
+      sendSupportEmail(obj);
+    }
+  };
+
+  const sendSupportEmail = obj => {
+    fetch(submitfeedbackUrl, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(obj),
+    })
+      .then(responseJson => {})
+      .catch(error => {});
   };
 
   function renderBubble(props) {
@@ -634,7 +686,7 @@ export default function ChatRoom({ route, navigation }) {
   };
 
   const deleteChat = () => {
-    if (!newChat)
+    if (!stateRef.current)
       Alert.alert(
         '',
         'Do you want to delete the chat?',
@@ -690,7 +742,37 @@ export default function ChatRoom({ route, navigation }) {
     // })
   };
 
+  const snackComponent = () => {
+    return (
+      <Snackbar
+        visible={!!visibleSnackbar}
+        onDismiss={() => setVisibleSnackbar('')}
+        duration={3000}
+        action={{
+          label: 'X',
+          onPress: () => {
+            setVisibleSnackbar('');
+          },
+        }}
+        style={{
+          backgroundColor: 'white',
+          borderRadius: 20,
+          borderWidth: 0.4,
+          borderColor: 'grey',
+        }}
+        wrapperStyle={{ backgroundColor: 'white' }}>
+        <Text style={{ color: 'black', fontSize: 16, letterSpacing: 1 }}>
+          {visibleSnackbar}
+        </Text>
+      </Snackbar>
+    );
+  };
+
   const loadingComponent = () => {
+    setTimeout(() => {
+      dispatch(setLoading(false));
+      setVisibleSnackbar('Something went wrong, Please try again');
+    }, 10000);
     return (
       <View style={styles.loadingBar}>
         <ActivityIndicator size={35} animating={true} color={Colors.black} />
@@ -852,7 +934,7 @@ export default function ChatRoom({ route, navigation }) {
           renderSend={renderSend}
           renderTime={renderTime}
           scrollToBottomComponent={scrollToBottomComponent}
-          // renderSystemMessage={renderSystemMessage}
+          renderSystemMessage={renderSystemMessage}
           showAvatarForEveryMessage={false}
           renderAvatarOnTop={true}
           // renderActions={() => (
@@ -868,6 +950,7 @@ export default function ChatRoom({ route, navigation }) {
           // isTyping={true}
         />
       )}
+      {snackComponent()}
     </View>
   );
 }
@@ -887,14 +970,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   systemMessageWrapper: {
-    backgroundColor: '#6646ee',
-    borderRadius: 4,
-    padding: 5,
+    backgroundColor: '#EAEAEA',
+    borderRadius: 8,
+    padding: 9,
+    paddingHorizontal: 14,
+    marginHorizontal: 10,
+    // marginBottom: 30,
   },
   systemMessageText: {
-    fontSize: 14,
-    color: '#fff',
-    fontWeight: 'bold',
+    fontSize: 15,
+    color: 'black',
+    opacity: 0.8,
+    // fontWeight: 'bold',
   },
   headerTitle: {
     fontSize: 20,
